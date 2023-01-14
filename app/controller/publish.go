@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"path/filepath"
-	. "tiktok/app/common"
+	. "tiktok/app/vo"
 )
 
 type VideoListResponse struct {

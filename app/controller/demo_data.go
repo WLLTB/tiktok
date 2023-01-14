@@ -1,6 +1,6 @@
 package controller
 
-import . "tiktok/app/common"
+import . "tiktok/app/vo"
 
 var DemoVideos = []Video{
 	{

@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	"sync/atomic"
-	. "tiktok/app/common"
+	. "tiktok/app/vo"
 	"time"
 )
 

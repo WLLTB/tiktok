@@ -3,9 +3,9 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	. "tiktok/app/common"
 	"tiktok/app/repository"
 	"tiktok/app/schema"
+	. "tiktok/app/vo"
 )
 
 type demo struct {
@@ -14,9 +14,9 @@ type demo struct {
 }
 
 func GetTableUserList(c *gin.Context) {
-	tableUsers, _ := repository.GetTableUserList()
+	userList, _ := repository.GetAllUsers()
 	c.JSON(http.StatusOK, demo{
 		Response: Response{StatusCode: 0},
-		UserList: tableUsers,
+		UserList: userList,
 	})
 }

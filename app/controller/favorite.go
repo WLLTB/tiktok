@@ -3,7 +3,7 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	. "tiktok/app/common"
+	. "tiktok/app/vo"
 )
 
 // FavoriteAction no practical effect, just check if token is valid
