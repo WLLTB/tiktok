@@ -1,11 +1,11 @@
-package main
+package config
 
 import (
 	"github.com/gin-gonic/gin"
-	"tiktok/controller"
+	controller "tiktok/app/controller"
 )
 
-func initRouter(r *gin.Engine) {
+func InitRouter(r *gin.Engine) {
 	r.Static("/static", "./public")
 
 	apiRouter := r.Group("/douyin")
