@@ -8,9 +8,8 @@ import (
 
 func main() {
 	r := gin.Default()
+	config.InitLog()
 	utils.InitClient()
 	config.InitGormDb()
 	config.InitRouter(r)
-
-	r.Run(":9999")
 }
