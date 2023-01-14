@@ -2,7 +2,8 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	config "tiktok/app/config"
+	"tiktok/app"
+	"tiktok/app/config"
 	"tiktok/app/utils"
 )
 
@@ -11,5 +12,5 @@ func main() {
 	config.InitLog()
 	utils.InitClient()
 	config.InitGormDb()
-	config.InitRouter(r)
+	app.InitRouter(r)
 }

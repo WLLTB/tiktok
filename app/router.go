@@ -1,4 +1,4 @@
-package config
+package app
 
 import (
 	"github.com/gin-gonic/gin"
@@ -31,6 +31,9 @@ func InitRouter(r *gin.Engine) {
 	apiRouter.GET("/relation/friend/list/", controller.FriendList)
 	apiRouter.GET("/message/chat/", controller.MessageChat)
 	apiRouter.POST("/message/action/", controller.MessageAction)
+
+	// 样例
+	apiRouter.GET("/demo", controller.GetTableUserList)
 
 	r.Run(":9999")
 }
