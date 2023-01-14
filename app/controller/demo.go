@@ -14,7 +14,7 @@ type demo struct {
 }
 
 func GetTableUserList(c *gin.Context) {
-	userList, _ := repository.GetAllUsers()
+	userList := repository.GetAllUsers()
 	c.JSON(http.StatusOK, demo{
 		Response: Response{StatusCode: 0},
 		UserList: userList,

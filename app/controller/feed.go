@@ -3,7 +3,6 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"tiktok/app/schema"
 	"tiktok/app/service"
 	. "tiktok/app/vo"
 	"time"
@@ -18,28 +17,16 @@ type FeedResponse struct {
 // Feed 处理视频流
 func Feed(c *gin.Context) {
 	const count = 10
-	var rawVideos []schema.Video
-	var videos []Video
+	userId := 1
 	lastTime := c.Query("latest_time")
-	rawVideos, err := service.GetVideos(lastTime, count)
+	videoList, err := service.ConvertVideoList(userId, lastTime, count)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	for _, rawVideo := range rawVideos {
-		video := Video{
-			Id:            rawVideo.Id,
-			Author:        DemoUser,
-			CommentCount:  1,
-			CoverUrl:      rawVideo.CoverUrl,
-			IsFavorite:    true,
-			FavoriteCount: 1,
-		}
-		videos = append(videos, video)
-	}
 	c.JSON(http.StatusOK, FeedResponse{
 		Response:  Response{StatusCode: 0},
-		VideoList: videos,
+		VideoList: videoList,
 		NextTime:  time.Now().Unix(),
 	})
 }

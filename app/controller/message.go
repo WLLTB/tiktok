@@ -5,14 +5,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
-	"sync/atomic"
 	. "tiktok/app/vo"
 	"time"
 )
 
 var tempChat = map[string][]Message{}
 
-var messageIdSequence = int64(1)
+var messageIdSequence = int(1)
 
 type ChatResponse struct {
 	Response
@@ -27,9 +26,9 @@ func MessageAction(c *gin.Context) {
 
 	if user, exist := usersLoginInfo[token]; exist {
 		userIdB, _ := strconv.Atoi(toUserId)
-		chatKey := genChatKey(user.Id, int64(userIdB))
+		chatKey := genChatKey(user.Id, userIdB)
 
-		atomic.AddInt64(&messageIdSequence, 1)
+		//atomic.Addint(&messageIdSequence, 1)
 		curMessage := Message{
 			Id:         messageIdSequence,
 			Content:    content,
@@ -54,7 +53,7 @@ func MessageChat(c *gin.Context) {
 
 	if user, exist := usersLoginInfo[token]; exist {
 		userIdB, _ := strconv.Atoi(toUserId)
-		chatKey := genChatKey(user.Id, int64(userIdB))
+		chatKey := genChatKey(user.Id, int(userIdB))
 
 		c.JSON(http.StatusOK, ChatResponse{Response: Response{StatusCode: 0}, MessageList: tempChat[chatKey]})
 	} else {
@@ -62,7 +61,7 @@ func MessageChat(c *gin.Context) {
 	}
 }
 
-func genChatKey(userIdA int64, userIdB int64) string {
+func genChatKey(userIdA int, userIdB int) string {
 	if userIdA > userIdB {
 		return fmt.Sprintf("%d_%d", userIdB, userIdA)
 	}

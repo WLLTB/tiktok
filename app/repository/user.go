@@ -1,17 +1,19 @@
 package repository
 
 import (
-	"log"
 	"tiktok/app/config"
 	. "tiktok/app/schema"
 )
 
-// GetTableUserList 获取全部 user 对象
-func GetTableUserList() ([]User, error) {
+// GetAllUsers 获取全部 user 对象
+func GetAllUsers() []User {
 	var userList []User
-	if err := config.Db.Table("users").Find(&userList).Error; err != nil {
-		log.Println(err.Error())
-		return userList, err
-	}
-	return userList, nil
+	config.Db.Table("users").Find(&userList)
+	return userList
+}
+
+func GetUserById(userId int) User {
+	var user User
+	config.Db.Table("users").Where("id = ?", userId).First(&user)
+	return user
 }
