@@ -5,7 +5,7 @@ import (
 	"tiktok/app/vo"
 )
 
-func GetAuthorInfo(userId int, authorId int) (vo.User, error) {
+func GetAuthorInfo(userId int64, authorId int64) (vo.User, error) {
 	author := repository.GetUserById(authorId)
 	authorFollowedCount := repository.GetFollowedCount(authorId)
 	authorFollowCount := repository.GetFollowCount(authorId)

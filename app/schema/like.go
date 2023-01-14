@@ -1,8 +1,8 @@
 package schema
 
 type Like struct {
-	Id         int    `json:"id"`
-	UserId     int    `json:"user_id"`
-	VideoId    int    `json:"video_id"`
+	Id         int64  `json:"id"`
+	UserId     int64  `json:"user_id"`
+	VideoId    int64  `json:"video_id"`
 	ActionType string `json:"action_type"`
 }

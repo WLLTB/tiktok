@@ -5,13 +5,13 @@ import (
 	"tiktok/app/schema"
 )
 
-func GetLikedCountByVideoId(videoId int) int {
+func GetLikedCountByVideoId(videoId int64) int64 {
 	var count int64
 	config.Db.Table("likes").Where("video_id = ?", videoId).Count(&count)
-	return int(count)
+	return count
 }
 
-func GetLikeListByUserId(userId int) []schema.Like {
+func GetLikeListByUserId(userId int64) []schema.Like {
 	var likeList []schema.Like
 	config.Db.Table("likes").Where("user_id = ?", userId).Find(&likeList)
 	return likeList

@@ -12,7 +12,7 @@ func GetAllUsers() []User {
 	return userList
 }
 
-func GetUserById(userId int) User {
+func GetUserById(userId int64) User {
 	var user User
 	config.Db.Table("users").Where("id = ?", userId).First(&user)
 	return user

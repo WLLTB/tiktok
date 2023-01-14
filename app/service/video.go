@@ -8,14 +8,14 @@ import (
 	. "time"
 )
 
-func GetVideos(time string, count int) ([]Video, error) {
+func GetVideos(time string, count int64) ([]Video, error) {
 	lastTime := parseTime(time)
 
 	videos := repository.PageVideoListByTime(lastTime, count)
 	return videos, nil
 }
 
-func ConvertVideoList(userId int, lastTime string, count int) ([]vo.Video, error) {
+func ConvertVideoList(userId int64, lastTime string, count int64) ([]vo.Video, error) {
 	rawVideos, err := GetVideos(lastTime, count)
 	if err != nil {
 		return nil, err
@@ -25,7 +25,7 @@ func ConvertVideoList(userId int, lastTime string, count int) ([]vo.Video, error
 	var videos []vo.Video
 
 	for _, rawVideo := range rawVideos {
-		authorInfo, err := GetAuthorInfo(userId, int(rawVideo.AuthorId))
+		authorInfo, err := GetAuthorInfo(userId, rawVideo.AuthorId)
 		if err != nil {
 			return nil, err
 		}
@@ -37,7 +37,7 @@ func ConvertVideoList(userId int, lastTime string, count int) ([]vo.Video, error
 			CoverUrl:      rawVideo.CoverUrl,
 			FavoriteCount: repository.GetLikedCountByVideoId(rawVideo.Id),
 			CommentCount:  repository.GetCommentCountByVideoId(rawVideo.Id),
-			IsFavorite:    isFavorite(likeList, int(rawVideo.Id)),
+			IsFavorite:    isFavorite(likeList, rawVideo.Id),
 			Title:         rawVideo.Title,
 		})
 	}
@@ -52,7 +52,7 @@ func parseTime(time string) Time {
 	return Unix(me, 0)
 }
 
-func isFavorite(likeList []Like, videoId int) bool {
+func isFavorite(likeList []Like, videoId int64) bool {
 	for _, like := range likeList {
 		if like.VideoId == videoId {
 			return true
