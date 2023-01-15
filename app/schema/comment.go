@@ -8,5 +8,4 @@ type Comment struct {
 	VideoId     int64  `json:"video_id"`
 	CommentText string `json:"comment_text"`
 	CreateDate  time.Time
-	ActionType  string `json:"action_type"`
 }
