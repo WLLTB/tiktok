@@ -1,4 +1,4 @@
-package config
+package constant
 
 const VIDEO_COUNT = 30
 
@@ -14,4 +14,11 @@ const (
 	MYSQL_HOST     = "127.0.0.1"
 	MYSQL_PORT     = "3306"
 	MYSQL_DBNAME   = "tiktok"
+)
+
+const (
+	OSS_ENDPOINT          = ""
+	OSS_ACCESS_KEY_ID     = ""
+	OSS_ACCESS_KEY_SECRET = ""
+	OSS_BUCKET_URL        = ""
 )

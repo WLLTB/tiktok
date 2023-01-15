@@ -2,11 +2,13 @@ package config
 
 import (
 	"fmt"
+	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"github.com/go-redis/redis"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"log"
+	. "tiktok/app/constant"
 	. "tiktok/app/utils"
 )
 
@@ -24,16 +26,25 @@ func InitLog() {
 	log.SetPrefix("[GIN_LOG] ")
 }
 
-// InitClient 初始化 Redis 客户端
-func InitClient() {
-	Client = redis.NewClient(&redis.Options{
+// InitRedisClient 初始化 Redis 客户端
+func InitRedisClient() {
+	RedisClient = redis.NewClient(&redis.Options{
 		Addr:     REDIS_ADDRESS,
 		Password: REDIS_PASSWORD,
 		DB:       REDIS_DB,
 	})
-	_, err := Client.Ping().Result()
+	_, err := RedisClient.Ping().Result()
 	if err != nil {
 		log.Panic("连接 Redis 失败: %w", err)
 	}
 	log.Print("连接 Redis 成功")
+}
+
+// InitOssClient 初始化 Oss 客户端
+func InitOssClient() {
+	var err error
+	OssClient, err = oss.New(OSS_ENDPOINT, OSS_ACCESS_KEY_ID, OSS_ACCESS_KEY_SECRET)
+	if err != nil {
+		log.Panic("创建 OSS 客户端失败: %w", err)
+	}
 }
