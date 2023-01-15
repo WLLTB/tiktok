@@ -20,7 +20,7 @@ func SupplementVideoList(userId int64, lastTime string, count int64) ([]vo.Video
 	for _, rawVideo := range rawVideos {
 		video := vo.Video{
 			Id:            rawVideo.Id,
-			Author:        supplementAuthorInfo(userId, rawVideo.AuthorId),
+			Author:        supplementTargetUserInfo(userId, rawVideo.AuthorId),
 			PlayUrl:       rawVideo.PlayUrl,
 			CoverUrl:      rawVideo.CoverUrl,
 			FavoriteCount: repository.CountLikedByVideoId(rawVideo.Id),
