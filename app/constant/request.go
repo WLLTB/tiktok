@@ -1,9 +1,9 @@
 package constant
 
-const TOKEN_SECRET = "tiktok"
+const TokenSecret = "tiktok"
 
 const TOKEN = "token"
 
-const INVALID_MESSAGE = "Invalid token"
+const InvalidMessage = "Invalid token"
 
-const SERVER_ERROR = "Service Error"
+const ServerError = "Service Error"

@@ -4,47 +4,54 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	. "tiktok/app/constant"
-	controller "tiktok/app/controller"
+	"tiktok/app/controller"
 	"tiktok/app/utils"
-	"tiktok/app/vo"
+	. "tiktok/app/vo"
 )
 
 func InitRouter(r *gin.Engine) {
-	r.Static("/static", "./public")
+	r.Static(StaticPath, PublishPath)
 
-	authRouter := r.Group("/douyin")
-	unAuthRouter := r.Group("/douyin")
+	setupCommonRoutes(r.Group(DefaultRouter))
+	setupAuthRoutes(r.Group(DefaultRouter))
 
-	authRouter.Use(tokenAuth())
-	authRouter.Use(recoveryMiddleware())
-	unAuthRouter.Use(recoveryMiddleware())
+	r.Run(PORT)
+}
+
+func setupCommonRoutes(r *gin.RouterGroup) {
+	r.Use(recoveryMiddleware())
 
 	// 基础接口
-	unAuthRouter.GET("/feed/", controller.Feed)
-	authRouter.GET("/user/", controller.UserInfo)
-	unAuthRouter.POST("/user/register/", controller.Register)
-	unAuthRouter.POST("/user/login/", controller.Login)
-	authRouter.POST("/publish/action/", controller.Publish)
-	authRouter.GET("/publish/list/", controller.PublishList)
+	r.GET(FeedPath, controller.Feed)
+	r.POST(RegisterPath, controller.Register)
+	r.POST(LoginPath, controller.Login)
+}
+
+func setupAuthRoutes(r *gin.RouterGroup) {
+	r.Use(tokenAuth())
+	r.Use(recoveryMiddleware())
+
+	// 基础接口
+	r.GET(UserInfoPath, controller.UserInfo)
+	r.POST(PublishPath, controller.Publish)
+	r.GET(PublishListPath, controller.PublishList)
 
 	// 互动接口
-	authRouter.POST("/favorite/action/", controller.FavoriteAction)
-	authRouter.GET("/favorite/list/", controller.FavoriteList)
-	authRouter.POST("/comment/action/", controller.CommentAction)
-	authRouter.GET("/comment/list/", controller.CommentList)
+	r.POST(FavoriteActionPath, controller.FavoriteAction)
+	r.GET(FavoriteListPath, controller.FavoriteList)
+	r.POST(CommentActionPath, controller.CommentAction)
+	r.GET(CommentListPath, controller.CommentList)
 
 	// 社交接口
-	authRouter.POST("/relation/action/", controller.RelationAction)
-	authRouter.GET("/relation/follow/list/", controller.FollowList)
-	authRouter.GET("/relation/follower/list/", controller.FollowerList)
-	authRouter.GET("/relation/friend/list/", controller.FriendList)
-	authRouter.GET("/message/chat/", controller.MessageChat)
-	authRouter.POST("/message/action/", controller.MessageAction)
+	r.POST(RelationActionPath, controller.RelationAction)
+	r.GET(FollowListPath, controller.FollowList)
+	r.GET(FollowerListPath, controller.FollowerList)
+	r.GET(FriendListPath, controller.FriendList)
+	r.GET(MessageChatPath, controller.MessageChat)
+	r.POST(MessageActionPath, controller.MessageAction)
 
 	// 样例
-	authRouter.GET("/demo", controller.GetTableUserList)
-
-	r.Run(":9999")
+	r.GET(DemoPath, controller.GetTableUserList)
 }
 
 func tokenAuth() gin.HandlerFunc {
@@ -58,7 +65,7 @@ func tokenAuth() gin.HandlerFunc {
 
 		_, err := utils.VerifyToken(token)
 		if err != nil {
-			c.JSON(http.StatusOK, vo.Response{StatusCode: 1, StatusMsg: INVALID_MESSAGE})
+			c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: InvalidMessage})
 			c.Abort()
 			return
 		}
@@ -70,9 +77,9 @@ func recoveryMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer func() {
 			if err := recover(); err != nil {
-				c.AbortWithStatusJSON(http.StatusOK, vo.Response{
+				c.AbortWithStatusJSON(http.StatusOK, Response{
 					StatusCode: 1,
-					StatusMsg:  SERVER_ERROR,
+					StatusMsg:  ServerError,
 				})
 			}
 		}()

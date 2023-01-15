@@ -10,7 +10,7 @@ import (
 var OssClient *oss.Client
 
 func OssUpload(file *multipart.FileHeader, fileName string) (string, error) {
-	bucket, err := OssClient.Bucket(constant.OSS_BUCKET_URL)
+	bucket, err := OssClient.Bucket(constant.OssBucketUrl)
 	if err != nil {
 		log.Println(err)
 		return "", err

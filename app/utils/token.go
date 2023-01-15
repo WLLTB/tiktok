@@ -5,7 +5,7 @@ import (
 	"tiktok/app/constant"
 )
 
-var secret = []byte(constant.TOKEN_SECRET) // 签名密钥
+var secret = []byte(constant.TokenSecret) // 签名密钥
 
 // GenerateToken 生成 token
 func GenerateToken(userId int64) (string, error) {

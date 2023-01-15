@@ -15,7 +15,7 @@ import (
 var Db *gorm.DB
 
 func InitGormDb() {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", MYSQL_USERNAME, MYSQL_PASSWORD, MYSQL_HOST, MYSQL_PORT, MYSQL_DBNAME)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", MysqlUsername, MysqlPassword, MysqlHost, MysqlPort, MysqlDbname)
 	Db, _ = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
@@ -29,9 +29,9 @@ func InitLog() {
 // InitRedisClient 初始化 Redis 客户端
 func InitRedisClient() {
 	RedisClient = redis.NewClient(&redis.Options{
-		Addr:     REDIS_ADDRESS,
-		Password: REDIS_PASSWORD,
-		DB:       REDIS_DB,
+		Addr:     RedisAddress,
+		Password: RedisPassword,
+		DB:       RedisDb,
 	})
 	_, err := RedisClient.Ping().Result()
 	if err != nil {
@@ -43,7 +43,7 @@ func InitRedisClient() {
 // InitOssClient 初始化 Oss 客户端
 func InitOssClient() {
 	var err error
-	OssClient, err = oss.New(OSS_ENDPOINT, OSS_ACCESS_KEY_ID, OSS_ACCESS_KEY_SECRET)
+	OssClient, err = oss.New(OssEndpoint, OssAccessKeyId, OssAccessKeySecret)
 	if err != nil {
 		log.Panic("创建 OSS 客户端失败: %w", err)
 	}

@@ -19,7 +19,7 @@ type FeedResponse struct {
 // Feed 处理视频流
 func Feed(c *gin.Context) {
 	lastTime := c.Query("latest_time")
-	videoList, err := service.SupplementVideoList(1, lastTime, constant.VIDEO_COUNT)
+	videoList, err := service.SupplementVideoList(1, lastTime, constant.VideoCount)
 
 	if err != nil {
 		utils.ErrorHandler(c, err)
