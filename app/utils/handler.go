@@ -7,10 +7,10 @@ import (
 	"tiktok/app/vo"
 )
 
-func ErrorHandler(c *gin.Context, err error) {
-	log.Println(err)
+func ErrorHandler(c *gin.Context, errorMessage string) {
+	log.Println(errorMessage)
 	c.JSON(http.StatusOK, vo.Response{
 		StatusCode: 1,
-		StatusMsg:  err.Error(),
+		StatusMsg:  errorMessage,
 	})
 }
