@@ -3,16 +3,15 @@ package utils
 import (
 	"github.com/dgrijalva/jwt-go"
 	"tiktok/app/constant"
-	"tiktok/app/schema"
 )
 
 var secret = []byte(constant.TOKEN_SECRET) // 签名密钥
 
 // GenerateToken 生成 token
-func GenerateToken(user schema.User) (string, error) {
+func GenerateToken(userId int64) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
-	claims["userId"] = user.Id
+	claims["userId"] = userId
 	return token.SignedString(secret)
 }
 

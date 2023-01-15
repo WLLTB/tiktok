@@ -2,38 +2,62 @@ package app
 
 import (
 	"github.com/gin-gonic/gin"
+	"net/http"
 	controller "tiktok/app/controller"
+	"tiktok/app/utils"
+	"tiktok/app/vo"
 )
 
 func InitRouter(r *gin.Engine) {
 	r.Static("/static", "./public")
 
-	apiRouter := r.Group("/douyin")
+	authRouter := r.Group("/douyin")
+	authRouter.Use(tokenAuth())
+	unAuthRouter := r.Group("/douyin")
 
 	// 基础接口
-	apiRouter.GET("/feed/", controller.Feed)
-	apiRouter.GET("/user/", controller.UserInfo)
-	apiRouter.POST("/user/register/", controller.Register)
-	apiRouter.POST("/user/login/", controller.Login)
-	apiRouter.POST("/publish/action/", controller.Publish)
-	apiRouter.GET("/publish/list/", controller.PublishList)
+	unAuthRouter.GET("/feed/", controller.Feed)
+	authRouter.GET("/user/", controller.UserInfo)
+	unAuthRouter.POST("/user/register/", controller.Register)
+	unAuthRouter.POST("/user/login/", controller.Login)
+	authRouter.POST("/publish/action/", controller.Publish)
+	authRouter.GET("/publish/list/", controller.PublishList)
 
 	// 互动接口
-	apiRouter.POST("/favorite/action/", controller.FavoriteAction)
-	apiRouter.GET("/favorite/list/", controller.FavoriteList)
-	apiRouter.POST("/comment/action/", controller.CommentAction)
-	apiRouter.GET("/comment/list/", controller.CommentList)
+	authRouter.POST("/favorite/action/", controller.FavoriteAction)
+	authRouter.GET("/favorite/list/", controller.FavoriteList)
+	authRouter.POST("/comment/action/", controller.CommentAction)
+	authRouter.GET("/comment/list/", controller.CommentList)
 
 	// 社交接口
-	apiRouter.POST("/relation/action/", controller.RelationAction)
-	apiRouter.GET("/relation/follow/list/", controller.FollowList)
-	apiRouter.GET("/relation/follower/list/", controller.FollowerList)
-	apiRouter.GET("/relation/friend/list/", controller.FriendList)
-	apiRouter.GET("/message/chat/", controller.MessageChat)
-	apiRouter.POST("/message/action/", controller.MessageAction)
+	authRouter.POST("/relation/action/", controller.RelationAction)
+	authRouter.GET("/relation/follow/list/", controller.FollowList)
+	authRouter.GET("/relation/follower/list/", controller.FollowerList)
+	authRouter.GET("/relation/friend/list/", controller.FriendList)
+	authRouter.GET("/message/chat/", controller.MessageChat)
+	authRouter.POST("/message/action/", controller.MessageAction)
 
 	// 样例
-	apiRouter.GET("/demo", controller.GetTableUserList)
+	authRouter.GET("/demo", controller.GetTableUserList)
 
 	r.Run(":9999")
+}
+
+func tokenAuth() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var token string
+		if c.Request.Method == http.MethodGet {
+			token = c.Query("token")
+		} else {
+			token = c.PostForm("token")
+		}
+
+		_, err := utils.VerifyToken(token)
+		if err != nil {
+			c.JSON(http.StatusOK, vo.Response{StatusCode: 1, StatusMsg: "Invalid token"})
+			c.Abort()
+			return
+		}
+		c.Next()
+	}
 }
