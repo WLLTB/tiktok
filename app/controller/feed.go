@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"tiktok/app/config"
 	"tiktok/app/service"
 	. "tiktok/app/vo"
 	"time"
@@ -16,9 +17,8 @@ type FeedResponse struct {
 
 // Feed 处理视频流
 func Feed(c *gin.Context) {
-	const count = 10
 	lastTime := c.Query("latest_time")
-	videoList, err := service.SupplementVideoList(1, lastTime, count)
+	videoList, err := service.SupplementVideoList(1, lastTime, config.VIDEO_COUNT)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"github.com/go-redis/redis"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -12,7 +13,7 @@ import (
 var Db *gorm.DB
 
 func InitGormDb() {
-	dsn := "root:root@tcp(127.0.0.1:3306)/tiktok?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", MYSQL_USERNAME, MYSQL_PASSWORD, MYSQL_HOST, MYSQL_PORT, MYSQL_DBNAME)
 	Db, _ = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
@@ -26,9 +27,9 @@ func InitLog() {
 // InitClient 初始化 Redis 客户端
 func InitClient() {
 	Client = redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "",
-		DB:       0,
+		Addr:     REDIS_ADDRESS,
+		Password: REDIS_PASSWORD,
+		DB:       REDIS_DB,
 	})
 	_, err := Client.Ping().Result()
 	if err != nil {
