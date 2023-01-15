@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"tiktok/app/constant"
 	"tiktok/app/service"
+	"tiktok/app/utils"
 	. "tiktok/app/vo"
 	"time"
 )
@@ -19,8 +20,9 @@ type FeedResponse struct {
 func Feed(c *gin.Context) {
 	lastTime := c.Query("latest_time")
 	videoList, err := service.SupplementVideoList(1, lastTime, constant.VIDEO_COUNT)
+
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		utils.ErrorHandler(c, err)
 		return
 	}
 	c.JSON(http.StatusOK, FeedResponse{

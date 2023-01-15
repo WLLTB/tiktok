@@ -22,5 +22,3 @@ const (
 	OSS_ACCESS_KEY_SECRET = ""
 	OSS_BUCKET_URL        = ""
 )
-
-const TOKEN_SECRET = "tiktok"

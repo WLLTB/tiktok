@@ -3,6 +3,7 @@ package app
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	. "tiktok/app/constant"
 	controller "tiktok/app/controller"
 	"tiktok/app/utils"
 	"tiktok/app/vo"
@@ -12,8 +13,11 @@ func InitRouter(r *gin.Engine) {
 	r.Static("/static", "./public")
 
 	authRouter := r.Group("/douyin")
-	authRouter.Use(tokenAuth())
 	unAuthRouter := r.Group("/douyin")
+
+	authRouter.Use(tokenAuth())
+	authRouter.Use(recoveryMiddleware())
+	unAuthRouter.Use(recoveryMiddleware())
 
 	// 基础接口
 	unAuthRouter.GET("/feed/", controller.Feed)
@@ -47,17 +51,31 @@ func tokenAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var token string
 		if c.Request.Method == http.MethodGet {
-			token = c.Query("token")
+			token = c.Query(TOKEN)
 		} else {
-			token = c.PostForm("token")
+			token = c.PostForm(TOKEN)
 		}
 
 		_, err := utils.VerifyToken(token)
 		if err != nil {
-			c.JSON(http.StatusOK, vo.Response{StatusCode: 1, StatusMsg: "Invalid token"})
+			c.JSON(http.StatusOK, vo.Response{StatusCode: 1, StatusMsg: INVALID_MESSAGE})
 			c.Abort()
 			return
 		}
+		c.Next()
+	}
+}
+
+func recoveryMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		defer func() {
+			if err := recover(); err != nil {
+				c.AbortWithStatusJSON(http.StatusOK, vo.Response{
+					StatusCode: 1,
+					StatusMsg:  SERVER_ERROR,
+				})
+			}
+		}()
 		c.Next()
 	}
 }
