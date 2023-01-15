@@ -12,5 +12,6 @@ func main() {
 	InitRedisClient()
 	InitGormDb()
 	InitOssClient()
+	InitRabbitMQ()
 	InitRouter(r)
 }

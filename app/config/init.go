@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"github.com/go-redis/redis"
+	"github.com/streadway/amqp"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -47,4 +48,13 @@ func InitOssClient() {
 	if err != nil {
 		log.Panic("创建 OSS 客户端失败: %w", err)
 	}
+}
+
+func InitRabbitMQ() {
+	var err error
+	RabbitMQConnection, err = amqp.Dial("amqp://guest:guest@localhost:5672/")
+	if err != nil {
+		log.Fatal(RabbitmqConnectFailed)
+	}
+	defer RabbitMQConnection.Close()
 }
