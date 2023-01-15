@@ -5,7 +5,7 @@ import (
 	"tiktok/app/schema"
 )
 
-func GetLikedCountByVideoId(videoId int64) int64 {
+func CountLikedByVideoId(videoId int64) int64 {
 	var count int64
 	config.Db.Table("likes").Where("video_id = ?", videoId).Count(&count)
 	return count

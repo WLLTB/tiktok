@@ -5,17 +5,14 @@ import (
 	"tiktok/app/vo"
 )
 
-func GetAuthorInfo(userId int64, authorId int64) (vo.User, error) {
+func supplementAuthorInfo(userId int64, authorId int64) vo.User {
 	author := repository.GetUserById(authorId)
-	authorFollowedCount := repository.GetFollowedCount(authorId)
-	authorFollowCount := repository.GetFollowCount(authorId)
 
-	authorInfo := vo.User{
+	return vo.User{
 		Id:            authorId,
 		Name:          author.Username,
-		FollowCount:   authorFollowCount,
-		FollowerCount: authorFollowedCount,
+		FollowCount:   repository.CountFollowByUserId(authorId),
+		FollowerCount: repository.CountFollowedByFollowId(authorId),
 		IsFollow:      repository.CheckIsFollowed(userId, authorId),
 	}
-	return authorInfo, nil
 }

@@ -18,7 +18,7 @@ type FeedResponse struct {
 func Feed(c *gin.Context) {
 	const count = 10
 	lastTime := c.Query("latest_time")
-	videoList, err := service.ConvertVideoList(1, lastTime, count)
+	videoList, err := service.SupplementVideoList(1, lastTime, count)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

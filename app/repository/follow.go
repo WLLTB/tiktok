@@ -4,13 +4,13 @@ import (
 	"tiktok/app/config"
 )
 
-func GetFollowCount(userId int64) int64 {
+func CountFollowByUserId(userId int64) int64 {
 	var count int64
 	config.Db.Table("follows").Where("user_id = ?", userId).Count(&count)
 	return count
 }
 
-func GetFollowedCount(followId int64) int64 {
+func CountFollowedByFollowId(followId int64) int64 {
 	var count int64
 	config.Db.Table("follows").Where("follower_id = ?", followId).Count(&count)
 	return count
