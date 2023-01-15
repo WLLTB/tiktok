@@ -10,7 +10,7 @@ import (
 )
 
 func InitRouter(r *gin.Engine) {
-	r.Static(StaticPath, PublishPath)
+	r.Static(StaticPath, PublicPath)
 
 	setupCommonRoutes(r.Group(DefaultRouter))
 	setupAuthRoutes(r.Group(DefaultRouter))
