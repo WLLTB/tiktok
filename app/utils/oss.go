@@ -9,7 +9,7 @@ import (
 
 var OssClient *oss.Client
 
-func ossUpload(file *multipart.FileHeader, fileName string) (string, error) {
+func OssUpload(file *multipart.FileHeader, fileName string) (string, error) {
 	bucket, err := OssClient.Bucket(constant.OSS_BUCKET_URL)
 	if err != nil {
 		log.Println(err)

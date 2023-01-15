@@ -1,11 +1,11 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"path/filepath"
+	"tiktok/app/utils"
 	. "tiktok/app/vo"
+	"time"
 )
 
 type VideoListResponse struct {
@@ -13,7 +13,7 @@ type VideoListResponse struct {
 	VideoList []Video `json:"video_list"`
 }
 
-// Publish check token then save upload file to public directory
+// Publish 将用户投稿的视频上传到阿里云 OSS，将对应的地址 URL 通过消息队列存储到数据库中，加快响应速度
 func Publish(c *gin.Context) {
 	token := c.PostForm("token")
 
@@ -21,8 +21,10 @@ func Publish(c *gin.Context) {
 		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 		return
 	}
+	userId := "sas"
 
-	data, err := c.FormFile("data")
+	file, err := c.FormFile("data")
+	url, err := utils.OssUpload(file, time.Now().Format("2006-01-02 15:04:05")+"_"+userId)
 	if err != nil {
 		c.JSON(http.StatusOK, Response{
 			StatusCode: 1,
@@ -30,22 +32,11 @@ func Publish(c *gin.Context) {
 		})
 		return
 	}
-
-	filename := filepath.Base(data.Filename)
-	user := usersLoginInfo[token]
-	finalName := fmt.Sprintf("%d_%s", user.Id, filename)
-	saveFile := filepath.Join("./public/", finalName)
-	if err := c.SaveUploadedFile(data, saveFile); err != nil {
-		c.JSON(http.StatusOK, Response{
-			StatusCode: 1,
-			StatusMsg:  err.Error(),
-		})
-		return
-	}
+	// 队列更新数据库
 
 	c.JSON(http.StatusOK, Response{
 		StatusCode: 0,
-		StatusMsg:  finalName + " uploaded successfully",
+		StatusMsg:  url + " uploaded successfully",
 	})
 }
 
