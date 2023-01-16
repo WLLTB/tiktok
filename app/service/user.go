@@ -5,7 +5,7 @@ import (
 	"tiktok/app/vo"
 )
 
-func supplementTargetUserInfo(currentUserId int64, targetUserId int64) vo.User {
+func SupplementTargetUserInfo(currentUserId int64, targetUserId int64) vo.User {
 	targetUser := repository.GetUserById(targetUserId)
 
 	return vo.User{

@@ -1,8 +1,12 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
+	"tiktok/app/service"
+	"tiktok/app/utils"
 	. "tiktok/app/vo"
 )
 
@@ -27,7 +31,7 @@ type UserLoginResponse struct {
 	Token  string `json:"token"`
 }
 
-type UserResponse struct {
+type UserInfoResponse struct {
 	Response
 	User User `json:"user"`
 }
@@ -37,20 +41,24 @@ func Register(c *gin.Context) {
 }
 
 func Login(c *gin.Context) {
-	
+
 }
 
 func UserInfo(c *gin.Context) {
 	token := c.Query("token")
+	tokenClaim, _ := utils.VerifyToken(token)
+	currentUserId := tokenClaim["userId"].(string)
+	targetUserId := c.Query("user_id")
 
-	if user, exist := usersLoginInfo[token]; exist {
-		c.JSON(http.StatusOK, UserResponse{
-			Response: Response{StatusCode: 0},
-			User:     user,
-		})
-	} else {
-		c.JSON(http.StatusOK, UserResponse{
-			Response: Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
-		})
-	}
+	currentUserIdInt, _ := strconv.ParseInt(currentUserId, 10, 64)
+	targetUserIdInt, _ := strconv.ParseInt(targetUserId, 10, 64)
+	fmt.Println(currentUserIdInt)
+	fmt.Println(targetUserIdInt)
+
+	//userInfo := service.SupplementTargetUserInfo(currentUserIdInt, targetUserIdInt)
+	userInfo := service.SupplementTargetUserInfo(1, 1)
+	c.JSON(http.StatusOK, UserInfoResponse{
+		Response: Response{StatusCode: 0},
+		User:     userInfo,
+	})
 }

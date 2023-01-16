@@ -26,7 +26,7 @@ func SupplementVideoList(userId int64, lastTime string, count int64) ([]vo.Video
 			defer wg.Done()
 			video := vo.Video{
 				Id:            rawVideo.Id,
-				Author:        supplementTargetUserInfo(userId, rawVideo.AuthorId),
+				Author:        SupplementTargetUserInfo(userId, rawVideo.AuthorId),
 				PlayUrl:       rawVideo.PlayUrl,
 				CoverUrl:      rawVideo.CoverUrl,
 				FavoriteCount: repository.CountLikedByVideoId(rawVideo.Id),
