@@ -27,12 +27,14 @@ func Publish(c *gin.Context) {
 	title := c.PostForm(constant.TITLE)
 	// 考虑限制上传时间间隔
 	file, err := c.FormFile(constant.DATA)
+	if err != nil {
+		utils.ErrorHandler(c, constant.ServerError)
+		return
+	}
+
 	url, err := utils.OssUpload(file, time.Now().Format("2006-01-02 15:04:05")+"_"+strconv.FormatInt(userId, 10))
 	if err != nil {
-		c.JSON(http.StatusOK, Response{
-			StatusCode: 1,
-			StatusMsg:  err.Error(),
-		})
+		utils.ErrorHandler(c, constant.ServerError)
 		return
 	}
 	// 需要生成封面缩略图

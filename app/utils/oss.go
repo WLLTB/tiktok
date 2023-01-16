@@ -12,29 +12,27 @@ var OssClient *oss.Client
 func OssUpload(file *multipart.FileHeader, fileName string) (string, error) {
 	bucket, err := OssClient.Bucket(constant.OssBucketUrl)
 	if err != nil {
-		log.Println(err)
-		return "", err
+		return "", handleError(err)
 	}
 
 	src, err := file.Open()
 	if err != nil {
-		log.Println(err)
-		return "", err
+		return "", handleError(err)
 	}
 	defer src.Close()
 
-	// 上传文件
-	err = bucket.PutObject(fileName, src)
-	if err != nil {
-		log.Println(err)
-		return "", err
+	if err := bucket.PutObject(fileName, src); err != nil {
+		return "", handleError(err)
 	}
 
-	// 获取访问地址
 	url, err := bucket.SignURL(fileName, oss.HTTPGet, 600)
 	if err != nil {
-		log.Println(err)
-		return "", err
+		return "", handleError(err)
 	}
 	return url, nil
+}
+
+func handleError(err error) error {
+	log.Println(err)
+	return err
 }

@@ -22,7 +22,7 @@ func Feed(c *gin.Context) {
 	videoList, err := service.SupplementVideoList(1, lastTime, constant.VideoCount)
 
 	if err != nil {
-		utils.ErrorHandler(c, err.Error())
+		utils.ErrorHandler(c, constant.ServerError)
 		return
 	}
 	c.JSON(http.StatusOK, FeedResponse{
