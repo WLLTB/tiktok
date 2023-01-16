@@ -3,6 +3,10 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
+	"tiktok/app/constant"
+	"tiktok/app/repository"
+	"tiktok/app/schema"
 	"tiktok/app/utils"
 	. "tiktok/app/vo"
 	"time"
@@ -15,16 +19,15 @@ type VideoListResponse struct {
 
 // Publish 将用户投稿的视频上传到阿里云 OSS，将对应的地址 URL 通过消息队列存储到数据库中，加快响应速度
 func Publish(c *gin.Context) {
-	token := c.PostForm("token")
+	token := c.PostForm(constant.TOKEN)
+	claims, _ := utils.VerifyToken(token)
+	userId := claims[constant.USERID].(int64)
+	// 判断是否有这个用户存在
 
-	if _, exist := usersLoginInfo[token]; !exist {
-		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
-		return
-	}
-	userId := "sas"
-
-	file, err := c.FormFile("data")
-	url, err := utils.OssUpload(file, time.Now().Format("2006-01-02 15:04:05")+"_"+userId)
+	title := c.PostForm(constant.TITLE)
+	// 考虑限制上传时间间隔
+	file, err := c.FormFile(constant.DATA)
+	url, err := utils.OssUpload(file, time.Now().Format("2006-01-02 15:04:05")+"_"+strconv.FormatInt(userId, 10))
 	if err != nil {
 		c.JSON(http.StatusOK, Response{
 			StatusCode: 1,
@@ -32,8 +35,15 @@ func Publish(c *gin.Context) {
 		})
 		return
 	}
-	// 队列更新数据库
-
+	// 需要生成封面缩略图
+	// 需要重构成队列更新数据库
+	_ = repository.InsertVideo(schema.Video{
+		AuthorId:    userId,
+		PlayUrl:     url,
+		CoverUrl:    "http://example.com/cover",
+		PublishTime: time.Now(),
+		Title:       title,
+	})
 	c.JSON(http.StatusOK, Response{
 		StatusCode: 0,
 		StatusMsg:  url + " uploaded successfully",

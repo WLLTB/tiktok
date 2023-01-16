@@ -11,7 +11,7 @@ var secret = []byte(constant.TokenSecret) // 签名密钥
 func GenerateToken(userId int64) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
-	claims["userId"] = userId
+	claims[constant.USERID] = userId
 	return token.SignedString(secret)
 }
 
