@@ -20,11 +20,11 @@ func InitGormDb() {
 	Db, _ = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
-	log.Print("数据库连接成功")
+	log.Print(MysqlConnectSuccess)
 }
 
 func InitLog() {
-	log.SetPrefix("[GIN_LOG] ")
+	log.SetPrefix(LogPrefix)
 }
 
 // InitRedisClient 初始化 Redis 客户端
@@ -36,9 +36,9 @@ func InitRedisClient() {
 	})
 	_, err := RedisClient.Ping().Result()
 	if err != nil {
-		log.Panic("连接 Redis 失败: %w", err)
+		log.Panic(RedisConnectFailed, err)
 	}
-	log.Print("连接 Redis 成功")
+	log.Print(RedisConnectSuccess)
 }
 
 // InitOssClient 初始化 Oss 客户端
@@ -46,13 +46,13 @@ func InitOssClient() {
 	var err error
 	OssClient, err = oss.New(OssEndpoint, OssAccessKeyId, OssAccessKeySecret)
 	if err != nil {
-		log.Panic("创建 OSS 客户端失败: %w", err)
+		log.Panic(OssConnectError, err)
 	}
 }
 
 func InitRabbitMQ() {
 	var err error
-	RabbitMQConnection, err = amqp.Dial("amqp://guest:guest@localhost:5672/")
+	RabbitMQConnection, err = amqp.Dial(RabbitMQURL)
 	if err != nil {
 		log.Fatal(RabbitmqConnectFailed)
 	}

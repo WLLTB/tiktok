@@ -23,4 +23,6 @@ const (
 	OssBucketUrl       = ""
 )
 
+const RabbitMQURL = "amqp://guest:guest@localhost:5672/"
+
 const PORT = ":9999"

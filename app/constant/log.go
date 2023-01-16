@@ -36,3 +36,7 @@ const (
 	RabbitmqConsumeSuccess = "RabbitMQ consume success."
 	RabbitmqConsumeFailed  = "RabbitMQ consume failed."
 )
+
+const OssConnectError = "Oss Connect Error."
+
+const LogPrefix = "[GIN_LOG] "
