@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	. "tiktok/app/constant"
@@ -11,7 +12,6 @@ import (
 
 func InitRouter(r *gin.Engine) {
 	r.Static(StaticPath, PublicPath)
-
 	setupCommonRoutes(r.Group(DefaultRouter))
 	setupAuthRoutes(r.Group(DefaultRouter))
 
@@ -20,6 +20,7 @@ func InitRouter(r *gin.Engine) {
 
 func setupCommonRoutes(r *gin.RouterGroup) {
 	r.Use(recoveryMiddleware())
+	setUpCors(r)
 
 	// 基础接口
 	r.GET(FeedPath, controller.Feed)
@@ -30,6 +31,7 @@ func setupCommonRoutes(r *gin.RouterGroup) {
 func setupAuthRoutes(r *gin.RouterGroup) {
 	r.Use(tokenAuth())
 	r.Use(recoveryMiddleware())
+	setUpCors(r)
 
 	// 基础接口
 	r.GET(UserInfoPath, controller.UserInfo)
@@ -84,4 +86,12 @@ func recoveryMiddleware() gin.HandlerFunc {
 		}()
 		c.Next()
 	}
+}
+
+func setUpCors(r *gin.RouterGroup) {
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+	config.AddAllowMethods("PUT", "PATCH", "GET", "POST", "DELETE")
+	r.Use(cors.New(config))
+
 }
