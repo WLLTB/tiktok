@@ -41,7 +41,12 @@ func Register(c *gin.Context) {
 }
 
 func Login(c *gin.Context) {
-
+	token, _ := utils.GenerateToken(int64(1))
+	c.JSON(http.StatusOK, UserLoginResponse{
+		Response: Response{StatusCode: 0},
+		UserId:   1,
+		Token:    token,
+	})
 }
 
 func UserInfo(c *gin.Context) {
