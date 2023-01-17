@@ -57,9 +57,8 @@ func setupAuthRoutes(r *gin.RouterGroup) {
 func tokenAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var token string
-		if c.Request.Method == http.MethodGet {
-			token = c.Query(TOKEN)
-		} else {
+		token = c.Query(TOKEN)
+		if token == "" {
 			token = c.PostForm(TOKEN)
 		}
 
