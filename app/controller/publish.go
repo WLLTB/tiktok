@@ -20,8 +20,7 @@ type VideoListResponse struct {
 // Publish 将用户投稿的视频上传到阿里云 OSS，将对应的地址 URL 通过消息队列存储到数据库中，加快响应速度
 func Publish(c *gin.Context) {
 	token := c.PostForm(constant.TOKEN)
-	claims, _ := utils.VerifyToken(token)
-	userId := claims[constant.USERID].(int64)
+	userId, _ := utils.VerifyToken(token)
 	// 判断是否有这个用户存在
 
 	title := c.PostForm(constant.TITLE)
@@ -32,7 +31,7 @@ func Publish(c *gin.Context) {
 		return
 	}
 
-	url, err := utils.OssUpload(file, time.Now().Format("2006-01-02 15:04:05")+"_"+strconv.FormatInt(userId, 10))
+	url, err := utils.OssUpload(file, time.Now().Format("2006-01-02 15:04:05")+"_"+strconv.FormatInt(userId, 10)+".mp4")
 	if err != nil {
 		utils.ErrorHandler(c, constant.ServerError)
 		return

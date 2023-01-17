@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -51,16 +50,13 @@ func Login(c *gin.Context) {
 
 func UserInfo(c *gin.Context) {
 	token := c.Query("token")
-	tokenClaim, _ := utils.VerifyToken(token)
-	userId :=  tokenClaim["userId"]
-	currentUserId := fmt.Sprintf("%v", userId)
+	userId, _ := utils.VerifyToken(token)
 	targetUserId := c.Query("user_id")
 
 	// 类型转换
-	currentUserIdInt, _ := strconv.ParseInt(currentUserId, 10, 64)
 	targetUserIdInt, _ := strconv.ParseInt(targetUserId, 10, 64)
 
-	userInfo := service.SupplementTargetUserInfo(currentUserIdInt, targetUserIdInt)
+	userInfo := service.SupplementTargetUserInfo(userId, targetUserIdInt)
 	c.JSON(http.StatusOK, UserInfoResponse{
 		Response: Response{StatusCode: 0},
 		User:     userInfo,

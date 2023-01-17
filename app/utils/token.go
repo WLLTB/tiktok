@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"strconv"
 	"tiktok/app/constant"
 )
 
@@ -16,18 +18,20 @@ func GenerateToken(userId int64) (string, error) {
 }
 
 // VerifyToken 校验 token
-func VerifyToken(tokenString string) (jwt.MapClaims, error) {
+func VerifyToken(tokenString string) (int64, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return secret, nil
 	})
 
 	if err != nil {
-		return nil, err
+		return 1, err
 	}
 
 	if !token.Valid {
-		return nil, jwt.ErrSignatureInvalid
+		return 1, jwt.ErrSignatureInvalid
 	}
 
-	return token.Claims.(jwt.MapClaims), nil
+	userInfo := token.Claims.(jwt.MapClaims)[constant.USERID]
+	currentUserId, err := strconv.ParseInt(fmt.Sprintf("%v", userInfo), 10, 64)
+	return currentUserId, nil
 }
