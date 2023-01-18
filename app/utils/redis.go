@@ -46,6 +46,23 @@ func GetSet(key string) ([]string, error) {
 	return set, nil
 }
 
+func GetSetUnion(key string, value string) ([]string, error) {
+	var set []string
+	set, err := RedisClient.SUnion(key, value).Result()
+	if err != nil {
+		return set, fmt.Errorf("获取 %s 和 %s 交集集合失败: %w", key, value, err)
+	}
+	return set, nil
+}
+
+func DeleteSet(key string, value string) error {
+	err := RedisClient.SRem(key, value)
+	if err != nil {
+		return fmt.Errorf("删除集合 %s 的 %s 元素失败: %w", key, value, err)
+	}
+	return nil
+}
+
 // HasSetValue 判断set中是否有某个值
 func HasSetValue(key, value string) (bool, error) {
 	has, err := RedisClient.SIsMember(key, value).Result()
