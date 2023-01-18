@@ -30,31 +30,28 @@ func SupplementLikeVideoList(userId int64) ([]vo.Video, error) {
 }
 
 func buildVideos(userId int64, rawVideos []Video) ([]vo.Video, error) {
-	// 查出用户喜欢列表
 	likeList := repository.GetLikeListByUserId(userId)
-
-	var wg sync.WaitGroup
-	wg.Add(len(rawVideos))
+	likeMap := make(map[int64]bool)
+	for _, like := range likeList {
+		likeMap[like.VideoId] = true
+	}
 
 	videoChan := make(chan vo.Video, len(rawVideos))
 
 	for _, rawVideo := range rawVideos {
-		go func(rawVideo Video) {
-			defer wg.Done()
-			video := vo.Video{
-				Id:            rawVideo.Id,
-				Author:        SupplementTargetUserInfo(userId, rawVideo.AuthorId),
-				PlayUrl:       rawVideo.PlayUrl,
-				CoverUrl:      rawVideo.CoverUrl,
-				FavoriteCount: repository.CountLikedByVideoId(rawVideo.Id),
-				CommentCount:  repository.CountCommentByVideoId(rawVideo.Id),
-				IsFavorite:    checkIsFavorite(likeList, rawVideo.Id),
-				Title:         rawVideo.Title,
-			}
-			videoChan <- video
-		}(rawVideo)
+		video := vo.Video{
+			Id:            rawVideo.Id,
+			Author:        SupplementTargetUserInfo(userId, rawVideo.AuthorId),
+			PlayUrl:       rawVideo.PlayUrl,
+			CoverUrl:      rawVideo.CoverUrl,
+			FavoriteCount: repository.CountLikedByVideoId(rawVideo.Id),
+			CommentCount:  repository.CountCommentByVideoId(rawVideo.Id),
+			IsFavorite:    checkIsFavorite(likeMap, rawVideo.Id),
+			Title:         rawVideo.Title,
+		}
+		videoChan <- video
 	}
-	wg.Wait()
+
 	close(videoChan)
 
 	var videos []vo.Video
@@ -72,13 +69,9 @@ func parseTime(time string) Time {
 	return Unix(me, 0)
 }
 
-func checkIsFavorite(likeList []Like, videoId int64) bool {
-	for _, like := range likeList {
-		if like.VideoId == videoId {
-			return true
-		}
-	}
-	return false
+func checkIsFavorite(likeList map[int64]bool, videoId int64) bool {
+	_, ok := likeList[videoId]
+	return ok
 }
 
 func SupplementCommentList(userId int64, videoId int64) ([]vo.Comment, error) {
