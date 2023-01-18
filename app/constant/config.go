@@ -17,10 +17,10 @@ const (
 )
 
 const (
-	OssEndpoint        = "oss-cn-guangzhou.aliyuncs.com"
-	OssAccessKeyId     = "LTAI5tKa8hZx5QgNnw2Uepwn"
-	OssAccessKeySecret = "MYVGPvKIBIp9gOb1oAL3UurrIgyS7W"
-	OssBucketUrl       = "wlltb"
+	OssEndpoint        = ""
+	OssAccessKeyId     = ""
+	OssAccessKeySecret = ""
+	OssBucketUrl       = ""
 )
 
 const RabbitMQURL = "amqp://guest:guest@localhost:5672/"
