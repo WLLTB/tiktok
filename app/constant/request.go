@@ -32,4 +32,8 @@ const InvalidActionType = "Invalid ActionType"
 
 const InvalidVideoID = "Invalid VideoID"
 
+const FollowSuccess = "follow user success"
+
+const CancelFollowSuccess = "cancel follow user success"
+
 const LastTime = "latest_time"
