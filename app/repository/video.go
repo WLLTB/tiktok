@@ -14,6 +14,12 @@ func PageVideoListByTime(lastTime time.Time, count int64) []Video {
 	return videos
 }
 
+func GetLikeVideoList(userId int64) []Video {
+	var videos []Video
+	config.Db.Table(constant.VIDEO).Where("user_id = ?", userId).Order("publish_time desc").Find(&videos)
+	return videos
+}
+
 func InsertVideo(video Video) error {
 	err := config.Db.Table(constant.VIDEO).Create(&video).Error
 	if err != nil {

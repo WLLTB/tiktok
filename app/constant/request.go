@@ -31,3 +31,5 @@ const ActionType = "action_type"
 const InvalidActionType = "Invalid ActionType"
 
 const InvalidVideoID = "Invalid VideoID"
+
+const LastTime = "latest_time"

@@ -9,10 +9,27 @@ import (
 	. "time"
 )
 
-func SupplementVideoList(userId int64, lastTime string, count int64) ([]vo.Video, error) {
-	// 数据库中查出来的数据，后续要转换成所需要的字段
+func SupplementFeedVideoList(userId int64, lastTime string, count int64) ([]vo.Video, error) {
 	rawVideos := repository.PageVideoListByTime(parseTime(lastTime), count)
 
+	videoList, err := buildVideos(userId, rawVideos)
+	if err != nil {
+		return nil, err
+	}
+	return videoList, nil
+}
+
+func SupplementLikeVideoList(userId int64) ([]vo.Video, error) {
+	rawVideos := repository.GetLikeVideoList(userId)
+
+	videoList, err := buildVideos(userId, rawVideos)
+	if err != nil {
+		return nil, err
+	}
+	return videoList, nil
+}
+
+func buildVideos(userId int64, rawVideos []Video) ([]vo.Video, error) {
 	// 查出用户喜欢列表
 	likeList := repository.GetLikeListByUserId(userId)
 

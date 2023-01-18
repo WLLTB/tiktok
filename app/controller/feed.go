@@ -18,13 +18,13 @@ type FeedResponse struct {
 
 // Feed 处理视频流
 func Feed(c *gin.Context) {
-	lastTime := c.Query("latest_time")
-	videoList, err := service.SupplementVideoList(1, lastTime, constant.VideoCount)
-
+	lastTime := c.Query(constant.LastTime)
+	videoList, err := service.SupplementFeedVideoList(1, lastTime, constant.VideoCount)
 	if err != nil {
 		utils.ErrorHandler(c, constant.ServerError)
 		return
 	}
+
 	c.JSON(http.StatusOK, FeedResponse{
 		Response:  Response{StatusCode: 0},
 		VideoList: videoList,
