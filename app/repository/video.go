@@ -24,13 +24,6 @@ func GetLikeVideoList(userId int64) []Video {
 
 }
 
-func GetCommentList(videoId int64) []Comment {
-	var comments []Comment
-	config.Db.Model(&Comment{}).Where("video_id = ?", videoId).Find(&comments)
-	return comments
-
-}
-
 func InsertVideo(video Video) error {
 	err := config.Db.Table(constant.VIDEO).Create(&video).Error
 	if err != nil {
