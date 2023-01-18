@@ -46,21 +46,29 @@ func GetSet(key string) ([]string, error) {
 	return set, nil
 }
 
-func GetSetUnion(key string, value string) ([]string, error) {
+// GetSetUnion key1和key2求交集
+func GetSetUnion(key1 string, key2 string) ([]string, error) {
 	var set []string
-	set, err := RedisClient.SUnion(key, value).Result()
+	set, err := RedisClient.SUnion(key1, key2).Result()
 	if err != nil {
-		return set, fmt.Errorf("获取 %s 和 %s 交集集合失败: %w", key, value, err)
+		return set, fmt.Errorf("获取 %s 和 %s 交集集合失败: %w", key1, key2, err)
 	}
 	return set, nil
 }
 
+// DeleteSet 删除key集合中的value元素
 func DeleteSet(key string, value string) error {
 	err := RedisClient.SRem(key, value)
 	if err != nil {
 		return fmt.Errorf("删除集合 %s 的 %s 元素失败: %w", key, value, err)
 	}
 	return nil
+}
+
+// IsSetMember 判断key集合中是否存在value元素
+func IsSetMember(key string, value string) bool {
+	member := RedisClient.SIsMember(key, value)
+	return member.Val()
 }
 
 // HasSetValue 判断set中是否有某个值
