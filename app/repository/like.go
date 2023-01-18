@@ -16,3 +16,11 @@ func GetLikeListByUserId(userId int64) []schema.Like {
 	config.Db.Table("likes").Where("user_id = ?", userId).Find(&likeList)
 	return likeList
 }
+
+func CreateLike(like *schema.Like) {
+	config.Db.Table("likes").Create(like)
+}
+
+func DeleteLike(like *schema.Like) {
+	config.Db.Table("likes").Where(like).Delete(like)
+}

@@ -13,4 +13,14 @@ func ErrorHandler(c *gin.Context, errorMessage string) {
 		StatusCode: 1,
 		StatusMsg:  errorMessage,
 	})
+	c.Abort()
+}
+
+func SuccessHandler(c *gin.Context, successMessage string) {
+	log.Println(successMessage)
+	c.JSON(http.StatusOK, vo.Response{
+		StatusCode: 0,
+		StatusMsg:  successMessage,
+	})
+	c.Abort()
 }
