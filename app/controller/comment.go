@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 	"tiktok/app/config"
+	"tiktok/app/constant"
 	"tiktok/app/schema"
 	. "tiktok/app/service"
 	"tiktok/app/utils"
@@ -73,8 +74,19 @@ func CommentAction(c *gin.Context) {
 
 // CommentList all videos have same demo comment list
 func CommentList(c *gin.Context) {
+	token := c.Query("token")
+	userId, _ := utils.VerifyToken(token)
+	videoId := c.Query("video_id")
+	videoIdInt, _ := strconv.ParseInt(videoId, 10, 64)
+
+	commentList, err := SupplementCommentList(userId, videoIdInt)
+	if err != nil {
+		utils.ErrorHandler(c, constant.ServerError)
+		return
+	}
+
 	c.JSON(http.StatusOK, CommentListResponse{
 		Response:    Response{StatusCode: 0},
-		CommentList: DemoComments,
+		CommentList: commentList,
 	})
 }
