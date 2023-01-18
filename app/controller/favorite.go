@@ -21,21 +21,23 @@ func FavoriteAction(c *gin.Context) {
 
 	// 判断video是否存在
 	videoOne := schema.Video{}
-	config.Db.Model(&schema.Video{}).Select("Id").Where("Id = ?", videoIdInt).Find(&videoOne)
+	config.Db.Model(&schema.Video{}).Select("Id").Where("Id = ?", videoIdInt).First(&videoOne)
 
 	if videoOne.Id == 0 {
 		c.JSON(http.StatusOK, Response{
-			StatusCode: 0,
+			StatusCode: 1,
 			StatusMsg:  "Video is not exist",
 		})
-	} else if actionTypeInt == 1 {
+	}
+	if actionTypeInt == 1 {
 		likeOne := schema.Like{UserId: userId, VideoId: videoIdInt}
 		config.Db.Model(&schema.Like{}).Create(&likeOne)
 		c.JSON(http.StatusOK, Response{
 			StatusCode: 0,
 			StatusMsg:  "Like successful",
 		})
-	} else if actionTypeInt == 2 {
+	}
+	if actionTypeInt == 2 {
 		likeOne := schema.Like{UserId: userId, VideoId: videoIdInt}
 		config.Db.Model(&schema.Like{}).Where(likeOne).Delete(&likeOne)
 		c.JSON(http.StatusOK, Response{
