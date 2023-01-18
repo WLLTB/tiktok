@@ -10,14 +10,14 @@ import (
 func SupplementCommentList(userId int64, videoId int64) ([]vo.Comment, error) {
 	rawComments := repository.GetCommentList(videoId)
 
-	commentList, err := buildComments(userId, videoId, rawComments)
+	commentList, err := buildComments(userId, rawComments)
 	if err != nil {
 		return nil, err
 	}
 	return commentList, nil
 }
 
-func buildComments(userId int64, videoId int64, rawComments []Comment) ([]vo.Comment, error) {
+func buildComments(userId int64, rawComments []Comment) ([]vo.Comment, error) {
 	var wg sync.WaitGroup
 	wg.Add(len(rawComments))
 
