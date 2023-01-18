@@ -1,5 +1,7 @@
 package constant
 
-const RedisSetLikePrefix = "LIKE_"
+const RedisSetLikePrefix = "LIKE:"
 
-const RedisSetCommentPrefix = "COMMENT_"
+const RedisSetCommentPrefix = "COMMENT:"
+
+const RedisSetFollowPrefix = "FOLLOW:"
