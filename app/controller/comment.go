@@ -74,10 +74,9 @@ func CommentAction(c *gin.Context) {
 
 // CommentList all videos have same demo comment list
 func CommentList(c *gin.Context) {
-	token := c.Query("token")
+	token := c.Query(constant.TOKEN)
 	userId, _ := utils.VerifyToken(token)
-	videoId := c.Query("video_id")
-	videoIdInt, _ := strconv.ParseInt(videoId, 10, 64)
+	videoIdInt, _ := strconv.ParseInt(c.Query(constant.VideoID), 10, 64)
 
 	commentList, err := SupplementCommentList(userId, videoIdInt)
 	if err != nil {
