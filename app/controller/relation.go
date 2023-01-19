@@ -57,19 +57,13 @@ func RelationAction(c *gin.Context) {
 	//}
 }
 
-// FollowList 获取某个用户的关注列表
+// FollowList 获取目标用户的关注列表
 func FollowList(c *gin.Context) {
 	// 参数获取&校验
-	token := c.Query("token")
-	_, _ = utils.VerifyToken(token)
-	userId := c.Query("user_id")
-	userIdInt, err := strconv.ParseInt(userId, 10, 64)
-	if err != nil {
-		utils.ErrorHandler(c, "query参数 user_id 错误")
-	}
+	curUserId, targetUserId := getUserId(c)
 
 	// 获取用户列表
-	userList, err := service.GetUserFollowList(userIdInt)
+	userList, err := service.GetUserFollowList(curUserId, targetUserId)
 	if err != nil {
 		utils.ErrorHandler(c, constant.ServerError)
 	}
@@ -91,22 +85,67 @@ func FollowList(c *gin.Context) {
 	//})
 }
 
-// FollowerList all users have same follower list
+// FollowerList 获取目标用户粉丝列表
 func FollowerList(c *gin.Context) {
+	// 参数获取&校验
+	curUserId, targetUserId := getUserId(c)
+
+	// 获取用户列表
+	userList, err := service.GetUserFansList(curUserId, targetUserId)
+	if err != nil {
+		utils.ErrorHandler(c, constant.ServerError)
+	}
+
+	// 返回集合
 	c.JSON(http.StatusOK, UserListResponse{
 		Response: Response{
 			StatusCode: 0,
+			StatusMsg:  "success",
 		},
-		UserList: []User{DemoUser},
+		UserList: userList,
 	})
+	//c.JSON(http.StatusOK, UserListResponse{
+	//	Response: Response{
+	//		StatusCode: 0,
+	//	},
+	//	UserList: []User{DemoUser},
+	//})
 }
 
-// FriendList all users have same friend list
+// FriendList 获取当前登录用户的互相关注
 func FriendList(c *gin.Context) {
+	// 参数获取&校验
+	curUserId, _ := getUserId(c)
+
+	// 获取用户列表
+	userList, err := service.GetUserFriendList(curUserId)
+	if err != nil {
+		utils.ErrorHandler(c, constant.ServerError)
+	}
+
+	// 返回集合
 	c.JSON(http.StatusOK, UserListResponse{
 		Response: Response{
 			StatusCode: 0,
+			StatusMsg:  "success",
 		},
-		UserList: []User{DemoUser},
+		UserList: userList,
 	})
+	//c.JSON(http.StatusOK, UserListResponse{
+	//	Response: Response{
+	//		StatusCode: 0,
+	//	},
+	//	UserList: []User{DemoUser},
+	//})
+}
+
+func getUserId(c *gin.Context) (int64, int64) {
+	token := c.Query("token")
+	curUserId, _ := utils.VerifyToken(token)
+	userId := c.Query("user_id")
+	targetUserId, err := strconv.ParseInt(userId, 10, 64)
+	if err != nil {
+		utils.ErrorHandler(c, "query参数 user_id 错误")
+	}
+	return curUserId, targetUserId
 }

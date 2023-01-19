@@ -40,3 +40,9 @@ func DeleteFollow(userId int64, toUserId int64) int64 {
 	result := config.Db.Table("follows").Where("user_id = ?", userId).Where("follow_id = ?", toUserId).Delete(schema.Follow{})
 	return result.RowsAffected
 }
+
+func GetUserFans(userId int64) []schema.Follow {
+	var followList []schema.Follow
+	config.Db.Table("follows").Where("follow_id = ?", userId).Find(&followList)
+	return followList
+}
