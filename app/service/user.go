@@ -2,6 +2,7 @@ package service
 
 import (
 	"tiktok/app/repository"
+	"tiktok/app/schema"
 	"tiktok/app/vo"
 )
 
@@ -16,4 +17,28 @@ func SupplementTargetUserInfo(currentUserId int64, targetUserId int64) vo.User {
 		FollowerCount: repository.CountFollowedByFollowId(targetUserId),
 		IsFollow:      currentUserId != 0 && repository.CheckIsFollowed(currentUserId, targetUserId),
 	}
+}
+
+
+func HandlerRegister(username string, password string) {
+	// 判断当前是否有这个用户了
+
+
+	// 密码加密
+	
+	var user schema.User = schema.User {
+		Username: username,
+		Password: password,
+	}
+	repository.InsertUser(user)
+}
+
+func HandlerLogin(username string, password string) (bool, int64) {
+	// 密码加密
+
+	user, err := repository.GetUserByUsernameAndPassword(username, password)
+	if err != nil {
+		return false, 0
+	}
+	return true, user.Id
 }

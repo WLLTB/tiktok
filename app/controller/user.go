@@ -1,12 +1,14 @@
 package controller
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+	"tiktok/app/constant"
 	"tiktok/app/service"
 	"tiktok/app/utils"
 	. "tiktok/app/vo"
+
+	"github.com/gin-gonic/gin"
 )
 
 // usersLoginInfo use map to store user info, and key is username+password for demo
@@ -36,13 +38,24 @@ type UserInfoResponse struct {
 }
 
 func Register(c *gin.Context) {
-
+	username := c.Query(constant.USERNAME)
+	password := c.Query(constant.PASSWORD)
+	service.HandlerRegister(username, password)
 }
 
 func Login(c *gin.Context) {
-	token, _ := utils.GenerateToken(int64(1))
+	username := c.Query(constant.USERNAME)
+	password := c.Query(constant.PASSWORD)
+
+	hasUser, userId := service.HandlerLogin(username, password)
+	if !hasUser {
+		utils.ErrorHandler(c, "Username Or Password Error")
+		return
+	}
+
+	token, _ := utils.GenerateToken(userId)
 	c.JSON(http.StatusOK, UserLoginResponse{
-		Response: Response{StatusCode: 0, StatusMsg: "ok"},
+		Response: Response{StatusCode: 0},
 		UserId:   1,
 		Token:    token,
 	})

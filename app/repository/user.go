@@ -17,3 +17,16 @@ func GetUserById(userId int64) User {
 	config.Db.Table("users").Where("id = ?", userId).First(&user)
 	return user
 }
+
+func InsertUser(user User) {
+	config.Db.Table("users").Create(&user)
+}
+
+func GetUserByUsernameAndPassword(username string, password string) (User, error) {
+	var user User
+	err := config.Db.Table("users").Where("username = ? and password = ?", username, password).First(&user)
+	if err != nil {
+		return User{}, err.Error
+	}
+	return user, nil
+}
