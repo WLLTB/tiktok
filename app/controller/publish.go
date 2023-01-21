@@ -21,7 +21,6 @@ type VideoListResponse struct {
 func Publish(c *gin.Context) {
 	token := c.PostForm(constant.TOKEN)
 	userId, _ := utils.VerifyToken(token)
-	// 判断是否有这个用户存在
 
 	title := c.PostForm(constant.TITLE)
 	// 考虑限制上传时间间隔
@@ -31,24 +30,25 @@ func Publish(c *gin.Context) {
 		return
 	}
 
-	url, err := utils.OssUpload(file, time.Now().Format("2006-01-02 15:04:05")+"_"+strconv.FormatInt(userId, 10)+".mp4")
+	fileName := time.Now().Format("2006-01-02 15:04:05") + "_" + strconv.FormatInt(userId, 10) + ".mp4"
+
+	playUrl, err := utils.OssUpload(file, fileName)
+	coverUrl := playUrl + "?x-oss-process=video/snapshot,t_10000,m_fast"
+
 	if err != nil {
 		utils.ErrorHandler(c, constant.ServerError)
 		return
 	}
-	// 需要生成封面缩略图
+
 	// 需要重构成队列更新数据库
 	_ = repository.InsertVideo(schema.Video{
 		AuthorId:    userId,
-		PlayUrl:     url,
-		CoverUrl:    "http://example.com/cover",
+		PlayUrl:     playUrl,
+		CoverUrl:    coverUrl,
 		PublishTime: time.Now(),
 		Title:       title,
 	})
-	c.JSON(http.StatusOK, Response{
-		StatusCode: 0,
-		StatusMsg:  url + " uploaded successfully",
-	})
+	utils.SuccessHandler(c, constant.ActionSuccess)
 }
 
 // PublishList all users have same publish video list

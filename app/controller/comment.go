@@ -40,7 +40,7 @@ func CommentAction(c *gin.Context) {
 
 	var comment schema.Comment
 	commentActionResponse := CommentActionResponse{
-		Response: Response{StatusCode: 0, StatusMsg: constant.Action_Success},
+		Response: Response{StatusCode: 0, StatusMsg: constant.ActionSuccess},
 	}
 
 	switch actionType {
