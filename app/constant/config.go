@@ -17,10 +17,10 @@ const (
 )
 
 const (
-	OssEndpoint        = ""
-	OssAccessKeyId     = ""
-	OssAccessKeySecret = ""
-	OssBucketUrl       = ""
+	OssEndpoint        = "ossEndpoint"
+	OssAccessKeyId     = "ossAccessKeyId"
+	OssAccessKeySecret = "ossAccessKeySecret"
+	OssBucketUrl       = "ossBucketUrl"
 )
 
 const RabbitMQURL = "amqp://guest:guest@localhost:5672/"

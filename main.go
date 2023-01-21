@@ -15,6 +15,7 @@ var upgrader = websocket.Upgrader{
 func main() {
 	r := gin.Default()
 	InitLog()
+	InitNacos()
 	InitRedisClient()
 	InitGormDb()
 	InitOssClient()
