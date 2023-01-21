@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"fmt"
 	"tiktok/app/config"
 	"tiktok/app/constant"
 	. "tiktok/app/schema"
@@ -25,9 +24,9 @@ func GetLikeVideoList(userId int64) []Video {
 }
 
 func InsertVideo(video Video) error {
-	err := config.Db.Table(constant.VIDEO).Create(&video).Error
-	if err != nil {
-		return fmt.Errorf("插入 video 失败: %w", err)
+	err := config.Db.Table(constant.VIDEO).Create(&video)
+	if err.Error != nil {
+		return err.Error
 	}
 	return nil
 }
@@ -41,7 +40,7 @@ func CountVideoById(videoId int64) int64 {
 func GetVideoById(videoId int64) (Video, error) {
 	var video Video
 	err := config.Db.Table(constant.VIDEO).Where("id = ?", videoId).First(&video)
-	if err != nil {
+	if err.Error != nil {
 		return Video{}, err.Error
 	}
 	return video, nil

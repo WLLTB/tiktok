@@ -25,7 +25,7 @@ func InsertUser(user User) {
 func GetUserByUsernameAndPassword(username string, password string) (User, error) {
 	var user User
 	err := config.Db.Table("users").Where("username = ? and password = ?", username, password).First(&user)
-	if err != nil {
+	if err.Error != nil {
 		return User{}, err.Error
 	}
 	return user, nil

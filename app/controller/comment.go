@@ -33,7 +33,7 @@ func CommentAction(c *gin.Context) {
 
 	// 判断video是否存在
 	currentVideo, err := repository.GetVideoById(videoId)
-	if err != nil {
+	if err != nil || currentVideo.Id == 0 {
 		utils.ErrorHandler(c, constant.VideoNotExist)
 		return
 	}
