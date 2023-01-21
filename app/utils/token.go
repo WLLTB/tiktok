@@ -24,11 +24,11 @@ func VerifyToken(tokenString string) (int64, error) {
 	})
 
 	if err != nil {
-		return 1, err
+		return 0, err
 	}
 
 	if !token.Valid {
-		return 1, jwt.ErrSignatureInvalid
+		return 0, jwt.ErrSignatureInvalid
 	}
 
 	userInfo := token.Claims.(jwt.MapClaims)[constant.USERID]
