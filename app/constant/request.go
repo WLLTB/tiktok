@@ -37,3 +37,5 @@ const FollowSuccess = "follow user success"
 const CancelFollowSuccess = "cancel follow user success"
 
 const LastTime = "latest_time"
+
+const Action_Success = "Action Successful"

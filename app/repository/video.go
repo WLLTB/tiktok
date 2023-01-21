@@ -37,3 +37,12 @@ func CountVideoById(videoId int64) int64 {
 	config.Db.Table(constant.VIDEO).Where("id = ?", videoId).Count(&count)
 	return count
 }
+
+func GetVideoById(videoId int64) (Video, error) {
+	var video Video
+	err := config.Db.Table(constant.VIDEO).Where("id = ?", videoId).First(&video)
+	if err != nil {
+		return Video{}, err.Error
+	}
+	return video, nil
+}

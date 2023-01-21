@@ -1,9 +1,10 @@
 package constant
 
 const ID = "id"
-const UserId = "userId"
+const UserId = "user_id"
 const VideoID = "video_id"
 const CommentText = "comment_text"
+const CommentId = "comment_id"
 const CommentCreateDate = "create_date"
 const FollowerId = "follower_id"
 const LikeDate = "like_date"

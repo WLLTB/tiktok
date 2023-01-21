@@ -4,8 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
-	"tiktok/app/config"
 	"tiktok/app/constant"
+	"tiktok/app/repository"
 	"tiktok/app/schema"
 	. "tiktok/app/service"
 	"tiktok/app/utils"
@@ -25,50 +25,36 @@ type CommentActionResponse struct {
 
 // CommentAction no practical effect, just check if token is valid
 func CommentAction(c *gin.Context) {
-	videoId := c.PostForm("video_id")
-	videoIdInt, _ := strconv.ParseInt(videoId, 10, 64)
-	actionType := c.PostForm("action_type")
-	actionTypeInt, _ := strconv.ParseInt(actionType, 10, 64)
-	commentText := c.PostForm("comment_text")
-	commentId := c.PostForm("comment_id")
-	commentIdInt, _ := strconv.ParseInt(commentId, 10, 64)
-	token := c.PostForm("token")
-	userId, _ := utils.VerifyToken(token)
+	videoId, _ := strconv.ParseInt(c.Query(constant.VideoID), 10, 64)
+	actionType, _ := strconv.ParseInt(c.Query(constant.ActionType), 10, 64)
+	commentId, _ := strconv.ParseInt(c.Query(constant.CommentId), 10, 64)
+	commentText := c.Query(constant.CommentText)
+	userId, _ := utils.VerifyToken(c.Query("token"))
 
 	// 判断video是否存在
-	videoOne := schema.Video{}
-	config.Db.Model(&schema.Video{}).Select("Id").Where("Id = ?", videoIdInt).First(&videoOne)
+	currentVideo, err := repository.GetVideoById(videoId)
+	if err != nil {
+		utils.ErrorHandler(c, constant.VideoNotExist)
+		return
+	}
 
-	if videoOne.Id == 0 {
-		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "Video is not exist"})
-	} else {
-		if actionTypeInt == 1 {
-			commentOne := schema.Comment{UserId: userId, VideoId: videoIdInt, CommentText: commentText, CreateDate: time.Now()}
-			config.Db.Model(&schema.Comment{}).Create(&commentOne)
+	var comment schema.Comment
+	commentActionResponse := CommentActionResponse{
+		Response: Response{StatusCode: 0, StatusMsg: constant.Action_Success},
+	}
 
-			c.JSON(http.StatusOK, CommentActionResponse{
-				Response: Response{StatusCode: 0, StatusMsg: "Comment successful"},
-				Comment: Comment{
-					Id:         commentOne.Id,
-					User:       SupplementTargetUserInfo(userId, userId),
-					Content:    commentText,
-					CreateDate: commentOne.CreateDate.Format("2006-01-02 15:04:05"),
-				},
-			})
-		}
-		if actionTypeInt == 2 {
-			commentOne := schema.Comment{UserId: userId, VideoId: videoIdInt, CommentText: commentText, Id: commentIdInt}
-			config.Db.Model(&schema.Comment{}).Where(commentOne).Delete(&commentOne).First(&commentOne)
-			c.JSON(http.StatusOK, CommentActionResponse{
-				Response: Response{StatusCode: 0, StatusMsg: "Delete successful"},
-				Comment: Comment{
-					Id:         commentOne.Id,
-					User:       SupplementTargetUserInfo(userId, userId),
-					Content:    commentText,
-					CreateDate: commentOne.CreateDate.Format("2006-01-02 15:04:05"),
-				},
-			})
-		}
+	switch actionType {
+	case 1:
+		comment = schema.Comment{UserId: userId, VideoId: currentVideo.Id, CommentText: commentText, CreateDate: time.Now()}
+		respComment := HandlerCommentAction(actionType, comment, userId, currentVideo.AuthorId)
+		commentActionResponse.Comment = respComment
+		c.JSON(http.StatusOK, commentActionResponse)
+	case 2:
+		comment = schema.Comment{Id: commentId}
+		HandlerCommentAction(actionType, comment, userId, currentVideo.AuthorId)
+		c.JSON(http.StatusOK, commentActionResponse)
+	default:
+		utils.ErrorHandler(c, constant.InvalidActionType)
 	}
 }
 
