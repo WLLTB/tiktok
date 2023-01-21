@@ -19,7 +19,7 @@ type FeedResponse struct {
 // Feed 处理视频流
 func Feed(c *gin.Context) {
 	lastTime := c.Query(constant.LastTime)
-	token := c.Query(constant.UserId)
+	token := c.Query(constant.TOKEN)
 	userId, err := utils.VerifyToken(token)
 	// 因为没强制登录，所以非法token就当没登录，给 0
 	if err != nil {
