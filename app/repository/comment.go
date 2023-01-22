@@ -17,3 +17,12 @@ func GetCommentList(videoId int64) []Comment {
 	config.Db.Table(constant.COMMENT).Where("video_id = ?", videoId).Find(&comments)
 	return comments
 }
+
+func InsertComment(comment Comment) int64 {
+	config.Db.Table(constant.COMMENT).Create(&comment)
+	return comment.Id
+}
+
+func DeleteComment(comment Comment) {
+	config.Db.Table(constant.COMMENT).Where(comment).Delete(&comment).First(&comment)
+}

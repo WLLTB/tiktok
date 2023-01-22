@@ -1,7 +1,6 @@
 package service
 
 import (
-	"tiktok/app/config"
 	"tiktok/app/repository"
 	. "tiktok/app/schema"
 	"tiktok/app/vo"
@@ -34,15 +33,15 @@ func buildCommentList(userId int64, rawComments []Comment) ([]vo.Comment, error)
 func HandlerCommentAction(actionType int64, comment Comment, userId int64, authorId int64) vo.Comment {
 	switch actionType {
 	case 1:
-		config.Db.Model(&Comment{}).Create(&comment)
+		commentId := repository.InsertComment(comment)
 		return vo.Comment{
-			Id:         comment.Id,
+			Id:         commentId,
 			User:       SupplementTargetUserInfo(userId, authorId),
 			Content:    comment.CommentText,
 			CreateDate: comment.CreateDate.Format("2006-01-02 15:04:05"),
 		}
 	case 2:
-		config.Db.Model(&Comment{}).Where(comment).Delete(&comment).First(&comment)
+		repository.DeleteComment(comment)
 		return vo.Comment{}
 	default:
 		return vo.Comment{}

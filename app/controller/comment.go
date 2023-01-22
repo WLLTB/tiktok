@@ -25,6 +25,7 @@ type CommentActionResponse struct {
 
 // CommentAction no practical effect, just check if token is valid
 func CommentAction(c *gin.Context) {
+	// 处理重复请求、是否有此记录、封装友好提示
 	videoId, _ := strconv.ParseInt(c.Query(constant.VideoID), 10, 64)
 	actionType, _ := strconv.ParseInt(c.Query(constant.ActionType), 10, 64)
 	commentId, _ := strconv.ParseInt(c.Query(constant.CommentId), 10, 64)
@@ -46,8 +47,7 @@ func CommentAction(c *gin.Context) {
 	switch actionType {
 	case 1:
 		comment = schema.Comment{UserId: userId, VideoId: currentVideo.Id, CommentText: commentText, CreateDate: time.Now()}
-		respComment := HandlerCommentAction(actionType, comment, userId, currentVideo.AuthorId)
-		commentActionResponse.Comment = respComment
+		commentActionResponse.Comment = HandlerCommentAction(actionType, comment, userId, currentVideo.AuthorId)
 		c.JSON(http.StatusOK, commentActionResponse)
 	case 2:
 		comment = schema.Comment{Id: commentId}
