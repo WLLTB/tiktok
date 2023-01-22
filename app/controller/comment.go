@@ -29,7 +29,7 @@ func CommentAction(c *gin.Context) {
 	actionType, _ := strconv.ParseInt(c.Query(constant.ActionType), 10, 64)
 	commentId, _ := strconv.ParseInt(c.Query(constant.CommentId), 10, 64)
 	commentText := c.Query(constant.CommentText)
-	userId, _ := utils.VerifyToken(c.Query("token"))
+	userId, _ := utils.VerifyToken(c.Query(constant.TOKEN))
 
 	// 判断video是否存在
 	currentVideo, err := repository.GetVideoById(videoId)

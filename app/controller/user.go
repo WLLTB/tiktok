@@ -62,9 +62,9 @@ func Login(c *gin.Context) {
 }
 
 func UserInfo(c *gin.Context) {
-	token := c.Query("token")
+	token := c.Query(constant.TOKEN)
 	userId, _ := utils.VerifyToken(token)
-	targetUserId := c.Query("user_id")
+	targetUserId := c.Query(constant.UserId)
 
 	// 类型转换
 	targetUserIdInt, _ := strconv.ParseInt(targetUserId, 10, 64)

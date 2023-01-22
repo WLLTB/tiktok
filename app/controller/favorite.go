@@ -37,7 +37,7 @@ func FavoriteAction(c *gin.Context) {
 
 // FavoriteList all users have same favorite video list
 func FavoriteList(c *gin.Context) {
-	token := c.Query("token")
+	token := c.Query(constant.TOKEN)
 	userId, _ := utils.VerifyToken(token)
 
 	videoList, err := service.SupplementLikeVideoList(userId)

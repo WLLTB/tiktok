@@ -18,9 +18,9 @@ type UserListResponse struct {
 // RelationAction no practical effect, just check if token is valid
 func RelationAction(c *gin.Context) {
 	// 获取query
-	token := c.Query("token")
-	toUserId := c.Query("to_user_id")
-	actionType := c.Query("action_type")
+	token := c.Query(constant.TOKEN)
+	toUserId := c.Query(constant.ToUserId)
+	actionType := c.Query(constant.ActionType)
 
 	// 参数校验
 	toUserIdInt, err := strconv.ParseInt(toUserId, 10, 64)
@@ -140,9 +140,9 @@ func FriendList(c *gin.Context) {
 }
 
 func getUserId(c *gin.Context) (int64, int64) {
-	token := c.Query("token")
+	token := c.Query(constant.TOKEN)
 	curUserId, _ := utils.VerifyToken(token)
-	userId := c.Query("user_id")
+	userId := c.Query(constant.UserId)
 	targetUserId, err := strconv.ParseInt(userId, 10, 64)
 	if err != nil {
 		utils.ErrorHandler(c, "query参数 user_id 错误")

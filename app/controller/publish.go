@@ -30,10 +30,10 @@ func Publish(c *gin.Context) {
 		return
 	}
 
-	fileName := time.Now().Format("2006-01-02 15:04:05") + "_" + strconv.FormatInt(userId, 10) + ".mp4"
+	fileName := time.Now().Format("2006-01-02 15:04:05") + "_" + strconv.FormatInt(userId, 10) + constant.VideoFormat
 
 	playUrl, err := utils.OssUpload(file, fileName)
-	coverUrl := playUrl + "?x-oss-process=video/snapshot,t_10000,m_fast"
+	coverUrl := playUrl + constant.CoverSuffix
 
 	if err != nil {
 		utils.ErrorHandler(c, constant.ServerError)
