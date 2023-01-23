@@ -17,6 +17,7 @@ type FavoriteResponse struct {
 
 // FavoriteAction no practical effect, just check if token is valid
 func FavoriteAction(c *gin.Context) {
+	// 重复点赞问题
 	videoId, err := strconv.ParseInt(c.Query(constant.VideoID), 10, 64)
 	if err != nil {
 		utils.ErrorHandler(c, constant.InvalidVideoID)

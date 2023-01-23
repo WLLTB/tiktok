@@ -28,6 +28,16 @@ func SupplementLikeVideoList(userId int64) ([]vo.Video, error) {
 	return videoList, nil
 }
 
+func SupplementPublishVideoList(userId int64, currentUserId int64) ([]vo.Video, error) {
+	rawVideos := repository.GetPublishVideoList(userId)
+
+	videoList, err := buildVideos(currentUserId, rawVideos)
+	if err != nil {
+		return nil, err
+	}
+	return videoList, nil
+}
+
 func buildVideos(userId int64, rawVideos []Video) ([]vo.Video, error) {
 	likeList := repository.GetLikeListByUserId(userId)
 	likeMap := make(map[int64]bool)

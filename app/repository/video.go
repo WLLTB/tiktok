@@ -20,7 +20,6 @@ func GetLikeVideoList(userId int64) []Video {
 	var videos []Video
 	config.Db.Model(&Video{}).Where("id in (?)", videoIds).Find(&videos)
 	return videos
-
 }
 
 func InsertVideo(video Video) error {
@@ -44,4 +43,10 @@ func GetVideoById(videoId int64) (Video, error) {
 		return Video{}, err.Error
 	}
 	return video, nil
+}
+
+func GetPublishVideoList(userId int64) []Video {
+	var videos []Video
+	config.Db.Table(constant.VIDEO).Where("user_id = ?", userId).Find(&videos)
+	return videos
 }

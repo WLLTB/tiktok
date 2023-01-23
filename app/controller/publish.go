@@ -7,6 +7,7 @@ import (
 	"tiktok/app/constant"
 	"tiktok/app/repository"
 	"tiktok/app/schema"
+	"tiktok/app/service"
 	"tiktok/app/utils"
 	. "tiktok/app/vo"
 	"time"
@@ -51,12 +52,22 @@ func Publish(c *gin.Context) {
 	utils.SuccessHandler(c, constant.ActionSuccess)
 }
 
-// PublishList all users have same publish video list
+// PublishList 用户投稿列表
 func PublishList(c *gin.Context) {
+	userId, _ := strconv.ParseInt(c.Query(constant.UserId), 10, 64)
+	token := c.Query(constant.TOKEN)
+	currentUserId, _ := utils.VerifyToken(token)
+
+	videoList, err := service.SupplementPublishVideoList(userId, currentUserId)
+	if err != nil {
+		utils.ErrorHandler(c, constant.ServerError)
+		return
+	}
+
 	c.JSON(http.StatusOK, VideoListResponse{
 		Response: Response{
 			StatusCode: 0,
 		},
-		VideoList: DemoVideos,
+		VideoList: videoList,
 	})
 }

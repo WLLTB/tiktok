@@ -62,9 +62,9 @@ func CommentAction(c *gin.Context) {
 func CommentList(c *gin.Context) {
 	token := c.Query(constant.TOKEN)
 	userId, _ := utils.VerifyToken(token)
-	videoIdInt, _ := strconv.ParseInt(c.Query(constant.VideoID), 10, 64)
+	videoId, _ := strconv.ParseInt(c.Query(constant.VideoID), 10, 64)
 
-	commentList, err := SupplementCommentList(userId, videoIdInt)
+	commentList, err := SupplementCommentList(userId, videoId)
 	if err != nil {
 		utils.ErrorHandler(c, constant.ServerError)
 		return
