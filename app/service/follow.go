@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"sync"
 	"tiktok/app/constant"
-	"tiktok/app/repository"
+	. "tiktok/app/repository"
 	"tiktok/app/utils"
 	"tiktok/app/vo"
 )
@@ -16,7 +16,7 @@ func FollowUser(userId int64, toUserId int64) error {
 	if userId == toUserId {
 		return fmt.Errorf("can not follow yourself")
 	}
-	if err := repository.InsertFollow(userId, toUserId); err != nil {
+	if err := InsertFollow(userId, toUserId); err != nil {
 		log.Printf("userId：%d follow toUserId：%d insert fail,err：%w", userId, toUserId, err)
 		return err
 	}
@@ -32,7 +32,7 @@ func FollowUser(userId int64, toUserId int64) error {
 
 // CancelFollowUser 取消关注
 func CancelFollowUser(userId int64, toUserId int64) error {
-	if repository.DeleteFollow(userId, toUserId) > 0 {
+	if DeleteFollow(userId, toUserId) > 0 {
 		go func() {
 			err := utils.DeleteSet(constant.RedisSetFollowPrefix+strconv.FormatInt(userId, 10), strconv.FormatInt(toUserId, 10))
 			if err != nil {
@@ -49,7 +49,7 @@ func IsFollowed(userId int64, followedUserId int64) bool {
 	if utils.IsSetMember(constant.RedisSetFollowPrefix+strconv.FormatInt(userId, 10), strconv.FormatInt(followedUserId, 10)) {
 		return true
 	}
-	if repository.CheckIsFollowed(userId, followedUserId) {
+	if CheckIsFollowed(userId, followedUserId) {
 		log.Printf("用户关注缓存不一致 userId：%d followedUserId：%d\n", userId, followedUserId)
 		return true
 	}
@@ -82,7 +82,7 @@ func GetUserFollowList(curUserId int64, tarUserId int64) ([]vo.User, error) {
 }
 
 func GetUserFansList(curUserId int64, tarUserId int64) ([]vo.User, error) {
-	followList := repository.GetUserFans(tarUserId)
+	followList := GetUserFans(tarUserId)
 	length := len(followList)
 	var wg sync.WaitGroup
 	wg.Add(length)

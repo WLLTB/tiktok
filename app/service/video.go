@@ -2,14 +2,14 @@ package service
 
 import (
 	"strconv"
-	"tiktok/app/repository"
+	. "tiktok/app/repository"
 	. "tiktok/app/schema"
 	"tiktok/app/vo"
 	. "time"
 )
 
 func SupplementFeedVideoList(userId int64, lastTime string, count int64) ([]vo.Video, error) {
-	rawVideos := repository.PageVideoListByTime(parseTime(lastTime), count)
+	rawVideos := PageVideoListByTime(parseTime(lastTime), count)
 
 	videoList, err := buildVideos(userId, rawVideos)
 	if err != nil {
@@ -19,7 +19,7 @@ func SupplementFeedVideoList(userId int64, lastTime string, count int64) ([]vo.V
 }
 
 func SupplementLikeVideoList(userId int64) ([]vo.Video, error) {
-	rawVideos := repository.GetLikeVideoList(userId)
+	rawVideos := GetLikeVideoList(userId)
 
 	videoList, err := buildVideos(userId, rawVideos)
 	if err != nil {
@@ -29,7 +29,7 @@ func SupplementLikeVideoList(userId int64) ([]vo.Video, error) {
 }
 
 func SupplementPublishVideoList(userId int64, currentUserId int64) ([]vo.Video, error) {
-	rawVideos := repository.GetPublishVideoList(userId)
+	rawVideos := GetPublishVideoList(userId)
 
 	videoList, err := buildVideos(currentUserId, rawVideos)
 	if err != nil {
@@ -39,7 +39,7 @@ func SupplementPublishVideoList(userId int64, currentUserId int64) ([]vo.Video, 
 }
 
 func buildVideos(userId int64, rawVideos []Video) ([]vo.Video, error) {
-	likeList := repository.GetLikeListByUserId(userId)
+	likeList := GetLikeListByUserId(userId)
 	likeMap := make(map[int64]bool)
 	for _, like := range likeList {
 		likeMap[like.VideoId] = true
@@ -53,8 +53,8 @@ func buildVideos(userId int64, rawVideos []Video) ([]vo.Video, error) {
 			Author:        SupplementTargetUserInfo(userId, rawVideo.AuthorId),
 			PlayUrl:       rawVideo.PlayUrl,
 			CoverUrl:      rawVideo.CoverUrl,
-			FavoriteCount: repository.CountLikedByVideoId(rawVideo.Id),
-			CommentCount:  repository.CountCommentByVideoId(rawVideo.Id),
+			FavoriteCount: CountLikedByVideoId(rawVideo.Id),
+			CommentCount:  CountCommentByVideoId(rawVideo.Id),
 			IsFavorite:    checkIsFavorite(likeMap, rawVideo.Id),
 			Title:         rawVideo.Title,
 		}

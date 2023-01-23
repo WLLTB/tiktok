@@ -1,13 +1,13 @@
 package service
 
 import (
-	"tiktok/app/repository"
+	. "tiktok/app/repository"
 	. "tiktok/app/schema"
 	"tiktok/app/vo"
 )
 
 func SupplementCommentList(userId int64, videoId int64) ([]vo.Comment, error) {
-	rawComments := repository.GetCommentList(videoId)
+	rawComments := GetCommentList(videoId)
 
 	commentList, err := buildCommentList(userId, rawComments)
 	if err != nil {
@@ -33,7 +33,7 @@ func buildCommentList(userId int64, rawComments []Comment) ([]vo.Comment, error)
 func HandlerCommentAction(actionType int64, comment Comment, userId int64, authorId int64) vo.Comment {
 	switch actionType {
 	case 1:
-		commentId := repository.InsertComment(comment)
+		commentId := InsertComment(comment)
 		return vo.Comment{
 			Id:         commentId,
 			User:       SupplementTargetUserInfo(userId, authorId),
@@ -41,7 +41,7 @@ func HandlerCommentAction(actionType int64, comment Comment, userId int64, autho
 			CreateDate: comment.CreateDate.Format("2006-01-02 15:04:05"),
 		}
 	case 2:
-		repository.DeleteComment(comment)
+		DeleteComment(comment)
 		return vo.Comment{}
 	default:
 		return vo.Comment{}
