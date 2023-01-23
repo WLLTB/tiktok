@@ -21,14 +21,15 @@ const (
 )
 
 const (
-	RabbitmqConnectSuccess      = "Connect to RabbitMQ success."
-	RabbitmqConnectFailed       = "Connect to RabbitMQ failed."
-	RabbitmqChannelOpenSuccess  = "Open RabbitMQ channel success."
-	RabbitmqChannelOpenFailed   = "Open RabbitMQ channel failed."
-	RabbitmqQueueDeclareSuccess = "Declare RabbitMQ queue success."
-	RabbitmqQueueDeclareFailed  = "Declare RabbitMQ queue failed."
-	RabbitmqQueueBindSuccess    = "Bind RabbitMQ queue success."
-	RabbitmqQueueBindFailed     = "Bind RabbitMQ queue failed."
+	RabbitmqConnectSuccess       = "Connect to RabbitMQ success."
+	RabbitmqConnectFailed        = "Connect to RabbitMQ failed."
+	RabbitmqChannelOpenSuccess   = "Open RabbitMQ channel success."
+	RabbitmqChannelDeclareFailed = "Declare RabbitMQ channel failed."
+	RabbitmqChannelOpenFailed    = "Open RabbitMQ channel failed."
+	RabbitmqQueueDeclareSuccess  = "Declare RabbitMQ queue success."
+	RabbitmqQueueDeclareFailed   = "Declare RabbitMQ queue failed."
+	RabbitmqQueueBindSuccess     = "Bind RabbitMQ queue success."
+	RabbitmqQueueBindFailed      = "Bind RabbitMQ queue failed."
 
 	RabbitmqPublishSuccess = "RabbitMQ publish success."
 	RabbitmqPublishFailed  = "RabbitMQ publish failed."
