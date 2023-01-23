@@ -59,7 +59,8 @@ func InitRabbitMQ() {
 	if err != nil {
 		log.Fatal(RabbitmqConnectFailed)
 	}
-	defer RabbitMQConnection.Close()
+
+	initDemoQueue()
 }
 
 func InitNacos() {
@@ -98,4 +99,53 @@ func InitNacos() {
 		Group:  "DEFAULT_GROUP",
 	})
 	fmt.Println("GetConfig,config :" + content)
+}
+
+func initDemoQueue() {
+	ch, err := RabbitMQConnection.Channel()
+	if err != nil {
+		log.Println(RabbitmqChannelOpenFailed)
+	}
+	_, err = ch.QueueDeclare(
+		DemoQueue,
+		false,
+		false,
+		false,
+		false,
+		nil,
+	)
+	if err != nil {
+		log.Fatalf(RabbitmqQueueDeclareFailed)
+	}
+	log.Println(RabbitmqQueueDeclareSuccess)
+
+	err = ch.QueueBind(
+		DemoQueue,
+		DemoTopic,
+		ExchangeName,
+		false,
+		nil)
+	if err != nil {
+		log.Fatalf(RabbitmqQueueBindFailed)
+	}
+	log.Println(RabbitmqQueueBindSuccess)
+
+	messages, err := ch.Consume(
+		DemoQueue,
+		"",
+		true,
+		false,
+		false,
+		false,
+		nil,
+	)
+	if err != nil {
+		log.Fatalf("Failed to register a consumer: %s", err)
+	}
+
+	go func() {
+		for message := range messages {
+			log.Printf("Received a messages: %s", message.Body)
+		}
+	}()
 }

@@ -23,10 +23,19 @@ const (
 	OssBucketUrl       = "ossBucketUrl"
 )
 
-const RabbitMQURL = "amqp://guest:guest@localhost:5672/"
+const (
+	RabbitMQURL  = "amqp://guest:guest@localhost:5672/"
+	ExchangeName = "amq.topic"
+	ExchangeType = "topic"
+)
 
 const PORT = ":9999"
 
 const CoverSuffix = "?x-oss-process=video/snapshot,t_10000,m_fast"
 
 const VideoFormat = ".mp4"
+
+const (
+	CommentQueue = "COMMENT"
+	CommentTopic = "COMMENT-ACTION"
+)
