@@ -36,6 +36,6 @@ const CoverSuffix = "?x-oss-process=video/snapshot,t_10000,m_fast"
 const VideoFormat = ".mp4"
 
 const (
-	CommentQueue = "COMMENT"
-	CommentTopic = "COMMENT-ACTION"
+	DemoQueue = "DEMO-QUEUE"
+	DemoTopic = "DEMO-TOPIC"
 )
