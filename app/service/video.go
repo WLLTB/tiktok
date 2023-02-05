@@ -18,26 +18,6 @@ func SupplementFeedVideoList(userId int64, lastTime string, count int64) ([]vo.V
 	return videoList, nil
 }
 
-func SupplementLikeVideoList(userId int64) ([]vo.Video, error) {
-	rawVideos := GetLikeVideoList(userId)
-
-	videoList, err := buildVideos(userId, rawVideos)
-	if err != nil {
-		return nil, err
-	}
-	return videoList, nil
-}
-
-func SupplementPublishVideoList(userId int64, currentUserId int64) ([]vo.Video, error) {
-	rawVideos := GetPublishVideoList(userId)
-
-	videoList, err := buildVideos(currentUserId, rawVideos)
-	if err != nil {
-		return nil, err
-	}
-	return videoList, nil
-}
-
 func buildVideos(userId int64, rawVideos []Video) ([]vo.Video, error) {
 	likeList := GetLikeListByUserId(userId)
 	likeMap := make(map[int64]bool)
