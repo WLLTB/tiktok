@@ -1,10 +1,11 @@
-package main
+package router
 
 import (
+	. "app/constant"
+	"app/controller"
 	"github.com/cloudwego/hertz/pkg/app/server"
-	handler "tiktok-video/biz/handler"
 )
 
 func customizedRegister(r *server.Hertz) {
-	r.GET("/ping", handler.Ping)
+	r.GET(FeedPath, controller.Feed)
 }
