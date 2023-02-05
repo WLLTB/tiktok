@@ -1,2 +1,1 @@
-# tiktok-dom
-ByteDance Youth Training Camp Project
+# 字节跳动青训营 —— 极简抖音
