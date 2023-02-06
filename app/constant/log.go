@@ -1,5 +1,7 @@
 package constant
 
+import "errors"
+
 const (
 	MysqlConnectSuccess = "Connect to MySQL success."
 	MysqlConnectFailed  = "Connect to MySQL failed."
@@ -19,6 +21,8 @@ const (
 	RedisDelSuccess     = "Redis delete success."
 	RedisDelFailed      = "Redis delete failed."
 )
+
+var ErrAcquireFailed = errors.New("Request limit reached, request failed")
 
 const (
 	RabbitmqConnectSuccess       = "Connect to RabbitMQ success."
